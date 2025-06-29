@@ -119,8 +119,8 @@ app.post('/api/generate-pdf', upload.fields([
   // 👇 DEBUG ici
   console.log('BODY:', req.body);
   console.log('FILES:', req.files);
-  res.json({ test: true });
-  return;
+  //res.json({ test: true }); //CE CODE MARCHE
+  //return; //CE CODE MARCHE
 
     const fichier1 = req.files['fichierJoint1']?.[0] || null;
     const fichier2 = req.files['fichierJoint2']?.[0] || null;
