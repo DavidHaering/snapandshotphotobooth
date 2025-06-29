@@ -1,24 +1,17 @@
-require('dotenv').config();
-
 const PDFDocument = require('pdfkit');
 const { Storage } = require('@google-cloud/storage');
 const streamBuffers = require('stream-buffers');
 const axios = require('axios');
+
 const path = require('path');
-const fs = require('fs');
 
 // Variables d'environnement pour les polices et bucket
 const projectId = process.env.PROJECT_ID;
 const bucketName = process.env.BUCKET_NAME;
 
-
-// ✅ Résolution fiable peu importe où est lancé le process
-const calibriRegularPath = path.resolve(__dirname, process.env.CALIBRI_REGULAR_PATH);
-const calibriBoldPath = path.resolve(__dirname, process.env.CALIBRI_BOLD_PATH);
-const calibriItalicPath = path.resolve(__dirname, process.env.CALIBRI_ITALIC_PATH);
-
-console.log('📁 Calibri Regular path:', calibriRegularPath);
-console.log('📁 Fichier existe ?', require('fs').existsSync(calibriRegularPath));  // ← doit être true
+const calibriRegularPath = path.resolve(process.cwd(), process.env.CALIBRI_REGULAR_PATH);
+const calibriBoldPath = path.resolve(process.cwd(), process.env.CALIBRI_BOLD_PATH);
+const calibriItalicPath = path.resolve(process.cwd(), process.env.CALIBRI_ITALIC_PATH);
 
 // Parser la variable d'environnement qui contient la clé JSON complète
 let credentials;
@@ -84,9 +77,9 @@ async function uploadPdfToGCS(formData) {
     const pageHeight = doc.page.height;
 
     const writableBuffer = new streamBuffers.WritableStreamBuffer();
-    const calibriRegularPath = path.resolve(__dirname, process.env.CALIBRI_REGULAR_PATH);
-    const calibriBoldPath = path.resolve(__dirname, process.env.CALIBRI_BOLD_PATH);
-    const calibriItalicPath = path.resolve(__dirname, process.env.CALIBRI_ITALIC_PATH);
+    doc.registerFont('Calibri', calibriRegularPath);
+    doc.registerFont('Calibri-Bold', calibriBoldPath);
+    doc.registerFont('Calibri-Italic', calibriItalicPath);
     doc.pipe(writableBuffer);
 
     function formatWithApostrophe(number) {
