@@ -1216,10 +1216,11 @@ async function uploadPdfToGCS(formData) {
       writableBuffer.on('error', reject);
     });
 
-    const pdfBuffer = writableBuffer.getContents();
+    const pdfBuffer = writableBuffer.getContentsAsBuffer();
 
-    if (!pdfBuffer) {
-      throw new Error('Erreur : impossible de récupérer le buffer du PDF');
+    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+      console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
+      throw new Error('Le buffer PDF est vide ou non valide');
     }
 
     // Upload dans GCS
@@ -1228,28 +1229,18 @@ async function uploadPdfToGCS(formData) {
     const file = bucket.file(fileName);
 
     await new Promise((resolve, reject) => {
-  try {
-    const stream = file.createWriteStream({
-      metadata: { contentType: 'application/pdf' },
-      resumable: false,
-    });
+  const stream = file.createWriteStream({
+    metadata: { contentType: 'application/pdf' },
+    resumable: false,
+  });
 
-    stream.on('finish', resolve);
-    stream.on('error', err => {
-      console.error('❌ Erreur dans le stream GCS :', err);
-      reject(err);
-    });
-
-    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
-      console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
-      return reject(new Error('Le buffer PDF est vide ou non valide'));
-    }
-
-    stream.end(pdfBuffer);
-  } catch (err) {
-    console.error('❌ Erreur dans le bloc de création de stream :', err);
+  stream.on('finish', resolve);
+  stream.on('error', err => {
+    console.error('❌ Erreur dans le stream GCS :', err);
     reject(err);
-  }
+  });
+
+  stream.end(pdfBuffer);
 });
 
     // URL publique (si ton bucket est public)
