@@ -12,20 +12,19 @@ const calibriRegularPath = path.resolve(process.cwd(), process.env.CALIBRI_REGUL
 const calibriBoldPath = path.resolve(process.cwd(), process.env.CALIBRI_BOLD_PATH);
 const calibriItalicPath = path.resolve(process.cwd(), process.env.CALIBRI_ITALIC_PATH);
 
-// Parser la variable d'environnement qui contient la clé JSON complète
 let credentials;
 try {
   credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT_JSON);
+
+  // ✅ Corriger les `\n` échappés
+  credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+
 } catch (error) {
   console.error("❌ Impossible de parser GCP_SERVICE_ACCOUNT_JSON :", error);
   process.exit(1);
 }
 
-// Initialiser Storage avec les credentials en mémoire
-const storage = new Storage({
-  projectId,
-  credentials,
-});
+const storage = new Storage({ credentials });
 
 async function uploadPdfToGCS(formData) {
   try {
