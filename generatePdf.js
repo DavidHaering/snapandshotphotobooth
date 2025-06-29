@@ -1205,22 +1205,25 @@ async function uploadPdfToGCS(formData) {
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+
+    // Attendre la fin du flux AVANT d'appeler .end()
+    const waitForFinish = new Promise((resolve, reject) => {
+      writableBuffer.on('finish', () => {
+        console.log('✅ WritableBuffer terminé');
+        resolve();
+      });
+      writableBuffer.on('error', err => {
+        console.error('❌ Erreur writableBuffer:', err);
+        reject(err);
+      });
+    });
+
     doc.end();
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    // Attendre la fin de l'écriture dans le buffer
-    await new Promise((resolve, reject) => {
-      writableBuffer.on('finish', () => {
-        console.log('WritableBuffer finish event reçu');
-        resolve();
-      });
-      writableBuffer.on('error', err => {
-        console.error('Erreur writableBuffer:', err);
-        reject(err);
-      });
-    });
+    await waitForFinish;
 
     const pdfBuffer = writableBuffer.getContents();
 
