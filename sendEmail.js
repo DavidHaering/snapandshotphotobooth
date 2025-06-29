@@ -1,7 +1,8 @@
 const nodemailer = require('nodemailer');
 const fetch = require('node-fetch');
 
-const isLocal = process.env.NODE_ENV !== 'production';  // Détecte si on est en local
+const isProd = process.env.NODE_ENV === 'production';
+console.log('rejectUnauthorized TLS:', process.env.NODE_ENV === 'production');
 
 async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   return Promise.race([
@@ -42,17 +43,17 @@ async function sendEmail(pdfUrl, recipientEmail) {
     `;
 
     const transporter = nodemailer.createTransport({
-      host: 'mail.infomaniak.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.SMTP_USER || 'info@snapandshot.ch',
-        pass: process.env.SMTP_PASSWORD,
-      },
-      tls: {
-        rejectUnauthorized: !isLocal  // <-- Ici : désactive en local, active en prod
-      }
-    });
+  host: 'mail.infomaniak.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER || 'info@snapandshot.ch',
+    pass: process.env.SMTP_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: isProd,
+  }
+});
 
     const mailOptions = {
       from: process.env.SMTP_USER || 'info@snapandshot.ch',
