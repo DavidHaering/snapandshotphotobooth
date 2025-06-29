@@ -374,9 +374,17 @@ async function uploadPdfToGCS(formData) {
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // --- Logo ---
-    const response = await axios.get('https://storage.googleapis.com/snapandshot-media-prod-2025/Logo.png', { responseType: 'arraybuffer' });
-    const logoBuffer = Buffer.from(response.data, 'binary');
-    doc.image(logoBuffer, margeGauche, margeHaute, { width: 160 });
+try {
+  const response = await axios.get('https://storage.googleapis.com/snapandshot-media-prod-2025/Logo.png', {
+    responseType: 'arraybuffer'
+  });
+  const logoBuffer = Buffer.from(response.data, 'binary');
+  doc.image(logoBuffer, margeGauche, margeHaute, { width: 160 });
+} catch (err) {
+  console.error('❌ Erreur chargement logo ou image invalide :', err);
+  // Optionnel : mettre un placeholder texte à la place
+  doc.fontSize(12).fillColor('red').text('[Logo manquant]', { align: 'left' });
+}
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
