@@ -1,17 +1,24 @@
+require('dotenv').config();
+
 const PDFDocument = require('pdfkit');
 const { Storage } = require('@google-cloud/storage');
 const streamBuffers = require('stream-buffers');
 const axios = require('axios');
-
 const path = require('path');
+const fs = require('fs');
 
 // Variables d'environnement pour les polices et bucket
 const projectId = process.env.PROJECT_ID;
 const bucketName = process.env.BUCKET_NAME;
 
-const calibriRegularPath = path.resolve(process.cwd(), process.env.CALIBRI_REGULAR_PATH);
-const calibriBoldPath = path.resolve(process.cwd(), process.env.CALIBRI_BOLD_PATH);
-const calibriItalicPath = path.resolve(process.cwd(), process.env.CALIBRI_ITALIC_PATH);
+
+// ✅ Résolution fiable peu importe où est lancé le process
+const calibriRegularPath = path.resolve(__dirname, process.env.CALIBRI_REGULAR_PATH);
+const calibriBoldPath = path.resolve(__dirname, process.env.CALIBRI_BOLD_PATH);
+const calibriItalicPath = path.resolve(__dirname, process.env.CALIBRI_ITALIC_PATH);
+
+console.log('📁 Calibri Regular path:', calibriRegularPath);
+console.log('📁 Fichier existe ?', require('fs').existsSync(calibriRegularPath));  // ← doit être true
 
 // Parser la variable d'environnement qui contient la clé JSON complète
 let credentials;
