@@ -1210,55 +1210,55 @@ async function uploadPdfToGCS(formData) {
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    // Attendre la fin de l'écriture dans le buffer
-    await new Promise((resolve, reject) => {
-      writableBuffer.on('finish', () => {
-        console.log('WritableBuffer finish event reçu');
-        resolve();
-      });
-      writableBuffer.on('error', err => {
-        console.error('Erreur writableBuffer:', err);
-        reject(err);
-      });
+async function uploadPdfToGCS() {
+  // Attendre la fin de l'écriture dans le buffer
+  await new Promise((resolve, reject) => {
+    writableBuffer.on('finish', () => {
+      console.log('WritableBuffer finish event reçu');
+      resolve();
     });
-
-    const pdfBuffer = writableBuffer.getContents();
-    console.log('pdfBuffer length:', pdfBuffer ? pdfBuffer.length : 'null');
-
-    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
-      console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
-      throw new Error('Le buffer PDF est vide ou non valide');
-    }
-
-    // Upload dans GCS
-    const fileName = `PDFDevis/devis_${Date.now()}.pdf`;
-    const bucket = storage.bucket(bucketName);
-    const file = bucket.file(fileName);
-
-await new Promise((resolve, reject) => {
-  const stream = file.createWriteStream({
-    metadata: { contentType: 'application/pdf' },
-    resumable: false,
+    writableBuffer.on('error', err => {
+      console.error('Erreur writableBuffer:', err);
+      reject(err);
+    });
   });
 
-  stream.on('finish', () => {
-    console.log('Upload PDF terminé');
-    resolve();
-  });
-
-  stream.on('error', err => {
-    console.error('Erreur stream GCS:', err);
-    reject(err);
-  });
+  const pdfBuffer = writableBuffer.getContents();
+  console.log('pdfBuffer length:', pdfBuffer ? pdfBuffer.length : 'null');
 
   if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
-    return reject(new Error('Buffer PDF invalide'));
+    console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
+    throw new Error('Le buffer PDF est vide ou non valide');
   }
 
-  console.log('Début upload PDF, buffer size:', pdfBuffer.length);
-  stream.end(pdfBuffer);
-});
+  // Upload dans GCS
+  const fileName = `PDFDevis/devis_${Date.now()}.pdf`;
+  const bucket = storage.bucket(bucketName);
+  const file = bucket.file(fileName);
 
+  await new Promise((resolve, reject) => {
+    const stream = file.createWriteStream({
+      metadata: { contentType: 'application/pdf' },
+      resumable: false,
+    });
+
+    stream.on('finish', () => {
+      console.log('Upload PDF terminé');
+      resolve();
+    });
+
+    stream.on('error', err => {
+      console.error('Erreur stream GCS:', err);
+      reject(err);
+    });
+
+    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+      return reject(new Error('Buffer PDF invalide'));
+    }
+
+    console.log('Début upload PDF, buffer size:', pdfBuffer.length);
+    stream.end(pdfBuffer);
+  });
 }
 
 module.exports = { uploadPdfToGCS };
