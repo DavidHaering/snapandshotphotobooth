@@ -1216,7 +1216,7 @@ async function uploadPdfToGCS(formData) {
       writableBuffer.on('error', reject);
     });
 
-    const pdfBuffer = writableBuffer.getContentsAsBuffer();
+    const pdfBuffer = writableBuffer.getContents();
 
     if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
       console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
