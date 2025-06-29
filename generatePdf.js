@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const path = require('path');
 
-const keyFilePath = path.resolve(process.cwd(), process.env.GCP_KEY_PATH);
+// Variables d'environnement pour les polices et bucket
 const projectId = process.env.PROJECT_ID;
 const bucketName = process.env.BUCKET_NAME;
 
@@ -13,9 +13,19 @@ const calibriRegularPath = path.resolve(process.cwd(), process.env.CALIBRI_REGUL
 const calibriBoldPath = path.resolve(process.cwd(), process.env.CALIBRI_BOLD_PATH);
 const calibriItalicPath = path.resolve(process.cwd(), process.env.CALIBRI_ITALIC_PATH);
 
+// Parser la variable d'environnement qui contient la clé JSON complète
+let credentials;
+try {
+  credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT_JSON);
+} catch (error) {
+  console.error("❌ Impossible de parser GCP_SERVICE_ACCOUNT_JSON :", error);
+  process.exit(1);
+}
+
+// Initialiser Storage avec les credentials en mémoire
 const storage = new Storage({
   projectId,
-  keyFilename: keyFilePath,
+  credentials,
 });
 
 async function uploadPdfToGCS(formData) {
