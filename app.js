@@ -21,6 +21,7 @@ let storage;
 
 try {
   const credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT_JSON);
+  credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
   console.log('private_key (length):', credentials.private_key.length);
   console.log('private_key (slice):', credentials.private_key.slice(0, 50));
   storage = new Storage({ credentials });
