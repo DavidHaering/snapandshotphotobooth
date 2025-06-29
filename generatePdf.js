@@ -889,10 +889,12 @@ async function uploadPdfToGCS(formData) {
       doc.text(`Style: ${folderName}`, margeGauche, y);
       checkPageBreak();
       doc.text(`Template: ${imageName}`, margeGauche, y + 14);
-
-      y += 30;
+      checkPageBreak();
+      y += 14;
+      checkPageBreak();
+      y +=16;
     });
-
+      checkPageBreak();
       y += interligne-2
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
