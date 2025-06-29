@@ -21,6 +21,8 @@ let storage;
 
 try {
   const credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT_JSON);
+  console.log('private_key (length):', credentials.private_key.length);
+  console.log('private_key (slice):', credentials.private_key.slice(0, 50));
   storage = new Storage({ credentials });
 } catch (error) {
   console.error("❌ Erreur lors du parsing de GCP_SERVICE_ACCOUNT_JSON :", error);
