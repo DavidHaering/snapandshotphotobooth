@@ -1295,108 +1295,110 @@
 
   </form>
 
-  <script>
+<script>
+  const API_BASE_URL = 'https://snapandshotphotobooth.onrender.com';
 
-    const level1Select = document.getElementById('level1');
-    const level2Select = document.getElementById('level2');
-    const imagePreview = document.getElementById('imagePreview');
+  const level1Select = document.getElementById('level1');
+  const level2Select = document.getElementById('level2');
+  const imagePreview = document.getElementById('imagePreview');
 
-    // Charge 1er niveau
-    fetch('/api/folders-level1')
-      .then(res => res.json())
-      .then(data => {
-        data.forEach(folder => {
-          const option = document.createElement('option');
-          option.value = folder;
-          option.textContent = folder;
-          level1Select.appendChild(option);
-        });
-      });
-
-      level1Select.addEventListener('change', () => {
-        const folder = level1Select.value;
-        level2Select.innerHTML = '<option value="">-- Choisissez et sélectionnez les formats --</option>';
-        imagePreview.innerHTML = '';
-
-      if (!folder) {
-        level2Select.disabled = true;
-        return;
-      }
-
-      level2Select.disabled = false;
-
-      fetch(`/api/folders-level2/${encodeURIComponent(folder)}`)
-        .then(res => res.json())
-        .then(data => {
-          data.forEach(subfolder => {
-            const option = document.createElement('option');
-            option.value = subfolder;
-            option.textContent = subfolder;
-            level2Select.appendChild(option);
-          });
-        });
-    });
-
-level2Select.addEventListener('change', () => {
-  const folder = level1Select.value;
-  const subfolder = level2Select.value;
-  imagePreview.innerHTML = '';
-
-  if (!subfolder) return;
-
-  fetch(`/api/files/${encodeURIComponent(folder)}/${encodeURIComponent(subfolder)}`)
+  // Charge 1er niveau
+  fetch(`${API_BASE_URL}/api/folders-level1`)
     .then(res => res.json())
     .then(data => {
-      // Filtrer les fichiers pour enlever ceux qui se terminent par .keep
-      const filteredData = data.filter(file => !file.endsWith('.keep'));
-
-      filteredData.forEach((file, index) => {
-        const fileUrl = `https://storage.googleapis.com/snapandshot-media-prod-2025/TemplatePhotobooth/${folder}/${subfolder}/${encodeURIComponent(file)}`;
-
-        const img = document.createElement('img');
-        img.src = fileUrl;
-        img.alt = file;
-
-        const container = document.createElement('div');
-        container.style.textAlign = 'center';
-
-        if (index === filteredData.length - 1) {
-          // Dernière image : 400px, centrée, sans checkbox
-          container.style.display = 'block';
-          container.style.width = '100%';
-          container.style.marginTop = '20px';  // <-- marge avant la dernière image
-
-          img.style.width = '400px';
-          img.style.height = 'auto';
-          img.style.display = 'block';
-          img.style.margin = '0 auto';
-
-          container.appendChild(img);
-        } else {
-          // Toutes les autres : inline + checkbox
-          container.style.display = 'inline-block';
-          container.style.margin = '10px';
-          container.style.verticalAlign = 'top';
-
-          img.style.maxWidth = '150px';
-          img.style.display = 'block';
-          img.style.margin = '0 auto';
-
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.value = fileUrl;
-          checkbox.name = 'selectedFiles';
-          checkbox.style.display = 'block';
-          checkbox.style.margin = '10px auto 0 auto'; // marge au dessus, centré
-
-          container.appendChild(img);
-          container.appendChild(checkbox);
-        }
-
-        imagePreview.appendChild(container);
+      data.forEach(folder => {
+        const option = document.createElement('option');
+        option.value = folder;
+        option.textContent = folder;
+        level1Select.appendChild(option);
       });
     });
-});
+
+  level1Select.addEventListener('change', () => {
+    const folder = level1Select.value;
+    level2Select.innerHTML = '<option value="">-- Choisissez et sélectionnez les formats --</option>';
+    imagePreview.innerHTML = '';
+
+    if (!folder) {
+      level2Select.disabled = true;
+      return;
+    }
+
+    level2Select.disabled = false;
+
+    fetch(`${API_BASE_URL}/api/folders-level2/${encodeURIComponent(folder)}`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(subfolder => {
+          const option = document.createElement('option');
+          option.value = subfolder;
+          option.textContent = subfolder;
+          level2Select.appendChild(option);
+        });
+      });
+  });
+
+  level2Select.addEventListener('change', () => {
+    const folder = level1Select.value;
+    const subfolder = level2Select.value;
+    imagePreview.innerHTML = '';
+
+    if (!subfolder) return;
+
+    fetch(`${API_BASE_URL}/api/files/${encodeURIComponent(folder)}/${encodeURIComponent(subfolder)}`)
+      .then(res => res.json())
+      .then(data => {
+        // Filtrer les fichiers pour enlever ceux qui se terminent par .keep
+        const filteredData = data.filter(file => !file.endsWith('.keep'));
+
+        filteredData.forEach((file, index) => {
+          const fileUrl = `https://storage.googleapis.com/snapandshot-media-prod-2025/TemplatePhotobooth/${folder}/${subfolder}/${encodeURIComponent(file)}`;
+
+          const img = document.createElement('img');
+          img.src = fileUrl;
+          img.alt = file;
+
+          const container = document.createElement('div');
+          container.style.textAlign = 'center';
+
+          if (index === filteredData.length - 1) {
+            // Dernière image : 400px, centrée, sans checkbox
+            container.style.display = 'block';
+            container.style.width = '100%';
+            container.style.marginTop = '20px';  // marge avant la dernière image
+
+            img.style.width = '400px';
+            img.style.height = 'auto';
+            img.style.display = 'block';
+            img.style.margin = '0 auto';
+
+            container.appendChild(img);
+          } else {
+            // Toutes les autres : inline + checkbox
+            container.style.display = 'inline-block';
+            container.style.margin = '10px';
+            container.style.verticalAlign = 'top';
+
+            img.style.maxWidth = '150px';
+            img.style.display = 'block';
+            img.style.margin = '0 auto';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = fileUrl;
+            checkbox.name = 'selectedFiles';
+            checkbox.style.display = 'block';
+            checkbox.style.margin = '10px auto 0 auto'; // marge au dessus, centré
+
+            container.appendChild(img);
+            container.appendChild(checkbox);
+          }
+
+          imagePreview.appendChild(container);
+        });
+      });
+  });
+</script>
 
   // --- Liste des pays ---
       const paysSelect = document.getElementById('pays');
