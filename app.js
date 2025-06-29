@@ -5,7 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
-const { uploadPdfToGCS } = require('./generatePdf');
+const uploadPdfToGCS = require('./generatePdf');
 const { sendEmail } = require('./sendEmail');
 
 const upload = multer({ dest: 'uploads/' });
