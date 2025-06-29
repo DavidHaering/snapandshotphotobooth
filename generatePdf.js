@@ -77,9 +77,9 @@ async function uploadPdfToGCS(formData) {
     const pageHeight = doc.page.height;
 
     const writableBuffer = new streamBuffers.WritableStreamBuffer();
-    doc.registerFont('Calibri', calibriRegularPath);
-    doc.registerFont('Calibri-Bold', calibriBoldPath);
-    doc.registerFont('Calibri-Italic', calibriItalicPath);
+    const calibriRegularPath = path.resolve(__dirname, process.env.CALIBRI_REGULAR_PATH);
+    const calibriBoldPath = path.resolve(__dirname, process.env.CALIBRI_BOLD_PATH);
+    const calibriItalicPath = path.resolve(__dirname, process.env.CALIBRI_ITALIC_PATH);
     doc.pipe(writableBuffer);
 
     function formatWithApostrophe(number) {
@@ -1206,53 +1206,55 @@ async function uploadPdfToGCS(formData) {
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
-async function uploadPdfToGCS(doc, writableBuffer, storage, bucketName) {
-  try {
-    // Retourne une promesse qui se résout à la fin du flux writableBuffer
-    const waitForFinish = new Promise((resolve, reject) => {
-      writableBuffer.on('finish', () => {
-        console.log('✅ WritableBuffer terminé');
-        resolve();
-      });
-      writableBuffer.on('error', err => {
-        console.error('❌ Erreur writableBuffer:', err);
-        reject(err);
-      });
-    });
+// ...tout ton code avant...
 
-    // Termine la génération du PDF (ex : PDFKit)
-    doc.end();
+// Attendre la fin du flux AVANT d'appeler .end()
+const waitForFinish = new Promise((resolve, reject) => {
+  writableBuffer.on('finish', () => {
+    console.log('✅ WritableBuffer terminé');
+    resolve();
+  });
+  writableBuffer.on('error', err => {
+    console.error('❌ Erreur writableBuffer:', err);
+    reject(err);
+  });
+});
 
-    // Attend la fin du flux pour être sûr que tout est écrit
-    await waitForFinish;
+doc.end();
 
-    // Récupère le contenu du buffer (le PDF)
-    const pdfBuffer = writableBuffer.getContents();
+await waitForFinish;
 
-    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
-      console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
-      throw new Error('Le buffer PDF est vide ou non valide');
-    }
+const pdfBuffer = writableBuffer.getContents();
 
-    // Prépare l'upload dans Google Cloud Storage
-    const fileName = `PDFDevis/devis_${Date.now()}.pdf`;
-    const bucket = storage.bucket(bucketName);
-    const file = bucket.file(fileName);
-
-    // Upload du buffer PDF (sans créer de stream, en une fois)
-    await file.save(pdfBuffer, {
-      contentType: 'application/pdf',
-      resumable: false,
-    });
-
-    console.log('PDF uploadé à:', `https://storage.googleapis.com/${bucketName}/${fileName}`);
-
-    // Retourne l'URL publique
-    return `https://storage.googleapis.com/${bucketName}/${fileName}`;
-  } catch (error) {
-    console.error('Erreur lors de la génération/upload PDF:', error);
-    throw error;
-  }
+if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+  console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
+  throw new Error('Le buffer PDF est vide ou non valide');
 }
+
+// Upload dans GCS avec file.save() au lieu de createWriteStream()
+const fileName = `PDFDevis/devis_${Date.now()}.pdf`;
+const bucket = storage.bucket(bucketName);
+const file = bucket.file(fileName);
+
+try {
+  await file.save(pdfBuffer, {
+    contentType: 'application/pdf',
+    resumable: false,
+  });
+  console.log('PDF uploadé à:', `https://storage.googleapis.com/${bucketName}/${fileName}`);
+} catch (err) {
+  console.error('Erreur upload GCS:', err);
+  throw err;
+}
+
+const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+
+return publicUrl;
+
+} catch (error) {
+  console.error('Erreur lors de la génération/upload PDF:', error);
+  throw error;
+}
+}  // <-- vérifie que cette accolade ferme bien la fonction uploadPdfToGCS
 
 module.exports = { uploadPdfToGCS };
