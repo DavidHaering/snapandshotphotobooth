@@ -1228,14 +1228,29 @@ async function uploadPdfToGCS(formData) {
     const file = bucket.file(fileName);
 
     await new Promise((resolve, reject) => {
-      const stream = file.createWriteStream({
-        metadata: { contentType: 'application/pdf' },
-        resumable: false,
-      });
-      stream.on('finish', resolve);
-      stream.on('error', reject);
-      stream.end(pdfBuffer);
+  try {
+    const stream = file.createWriteStream({
+      metadata: { contentType: 'application/pdf' },
+      resumable: false,
     });
+
+    stream.on('finish', resolve);
+    stream.on('error', err => {
+      console.error('❌ Erreur dans le stream GCS :', err);
+      reject(err);
+    });
+
+    if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+      console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
+      return reject(new Error('Le buffer PDF est vide ou non valide'));
+    }
+
+    stream.end(pdfBuffer);
+  } catch (err) {
+    console.error('❌ Erreur dans le bloc de création de stream :', err);
+    reject(err);
+  }
+});
 
     // URL publique (si ton bucket est public)
     const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
