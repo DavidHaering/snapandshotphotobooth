@@ -1251,4 +1251,10 @@ const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
 
 return publicUrl;
 
-// ...fin de ta fonction...
+} catch (error) {
+  console.error('Erreur lors de la génération/upload PDF:', error);
+  throw error;
+}
+}  // <-- vérifie que cette accolade ferme bien la fonction uploadPdfToGCS
+
+module.exports = { uploadPdfToGCS };
