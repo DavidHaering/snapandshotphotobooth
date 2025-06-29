@@ -1842,7 +1842,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const form = e.target;
     const formData = new FormData(form);
 
-    const res = await fetch('/api/generate-pdf', {
+    const res = await fetch('https://snapandshotphotobooth.onrender.com/api/generate-pdf', {
       method: 'POST',
       body: formData
     });
