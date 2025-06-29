@@ -1842,12 +1842,32 @@ window.addEventListener('DOMContentLoaded', () => {
     const form = e.target;
     const formData = new FormData(form);
 
-    const res = await fetch('https://snapandshotphotobooth.onrender.com/api/generate-pdf', {
-      method: 'POST',
-      body: formData
-    });
-    const json = await res.json();
-    console.log(json);
+    try {
+      const res = await fetch('https://snapandshotphotobooth.onrender.com/api/generate-pdf', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        // Code HTTP non OK, lecture du message d'erreur
+        const errorResponse = await res.json();
+        console.error('Erreur serveur:', errorResponse);
+        alert('Erreur serveur : ' + (errorResponse.error || res.statusText));
+        return;
+      }
+
+      const json = await res.json();
+      console.log('Réponse du serveur:', json);
+
+      // Tu peux ici déclencher un téléchargement si tu reçois une URL PDF
+      if (json && json.url) {
+        window.open(json.url, '_blank');
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de la requête fetch:', error);
+      alert('Erreur réseau ou serveur, merci de réessayer.');
+    }
   });
 </script>
 

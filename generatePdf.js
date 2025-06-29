@@ -1223,6 +1223,7 @@ async function uploadPdfToGCS(formData) {
     });
 
     const pdfBuffer = writableBuffer.getContents();
+    console.log('pdfBuffer length:', pdfBuffer ? pdfBuffer.length : 'null');
 
     if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
       console.error('❌ Le pdfBuffer est invalide :', pdfBuffer);
@@ -1234,36 +1235,28 @@ async function uploadPdfToGCS(formData) {
     const bucket = storage.bucket(bucketName);
     const file = bucket.file(fileName);
 
-    await new Promise((resolve, reject) => {
+await new Promise((resolve, reject) => {
   const stream = file.createWriteStream({
     metadata: { contentType: 'application/pdf' },
     resumable: false,
   });
 
-  stream.on('finish', resolve);
+  stream.on('finish', () => {
+    console.log('Upload PDF terminé');
+    resolve();
+  });
+
   stream.on('error', err => {
     console.error('Erreur stream GCS:', err);
     reject(err);
   });
 
-  try {
-    stream.end(pdfBuffer);
-  } catch (err) {
-    console.error('Erreur stream.end:', err);
-    reject(err);
+  if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
+    return reject(new Error('Buffer PDF invalide'));
   }
+
+  console.log('Début upload PDF, buffer size:', pdfBuffer.length);
+  stream.end(pdfBuffer);
 });
-
-    // URL publique (si ton bucket est public)
-    const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
-    console.log('PDF uploadé à:', publicUrl);
-
-    return publicUrl;
-
-  } catch (error) {
-    console.error('Erreur lors de la génération/upload PDF:', error);
-    throw error;
-  }
-}
 
 module.exports = { uploadPdfToGCS };
