@@ -137,8 +137,9 @@ app.post('/api/generate-pdf', upload.fields([
 
     res.json({ url: pdfUrl });
   } catch (err) {
-    console.error('Erreur génération PDF:', err);
-    res.status(500).json({ error: err.message });
+      console.error('❌ Erreur génération PDF:', err);
+      if (err.stack) console.error('🧵 Stack trace:', err.stack);
+      res.status(500).json({ error: err.message || 'Erreur serveur' });
   }
 });
 
