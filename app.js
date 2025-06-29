@@ -14,14 +14,17 @@ const app = express();
 const port = process.env.PORT || 3000;  // <-- ici on utilise la variable d'env
 
 // Remplacer les chemins et infos en dur par variables d'environnement
-const keyFilePath = process.env.GCP_KEY_PATH;     // chemin vers la clé JSON
-const projectId = process.env.PROJECT_ID;         // ID projet GCP
-const bucketName = process.env.BUCKET_NAME;       // nom du bucket GCS
 
-const storage = new Storage({
-  projectId,
-  keyFilename: keyFilePath,
-});
+const bucketName = process.env.BUCKET_NAME;
+
+let storage;
+
+try {
+  const credentials = JSON.parse(process.env.GCP_SERVICE_ACCOUNT_JSON);
+  storage = new Storage({ credentials });
+} catch (error) {
+  console.error("❌ Erreur lors du parsing de GCP_SERVICE_ACCOUNT_JSON :", error);
+}
 
 app.use(cors());
 // Attention : ne PAS utiliser express.json() ni express.urlencoded() ici pour la route avec multer,
