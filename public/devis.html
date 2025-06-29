@@ -1848,18 +1848,16 @@ window.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
+      const json = await res.json(); // lecture unique ici
+      console.log('Réponse du serveur:', json);
+
       if (!res.ok) {
-        // Code HTTP non OK, lecture du message d'erreur
-        const errorResponse = await res.json();
-        console.error('Erreur serveur:', errorResponse);
-        alert('Erreur serveur : ' + (errorResponse.error || res.statusText));
+        console.error('Erreur serveur:', json);
+        alert('Erreur serveur : ' + (json.error || res.statusText));
         return;
       }
 
-      const json = await res.json();
-      console.log('Réponse du serveur:', json);
-
-      // Tu peux ici déclencher un téléchargement si tu reçois une URL PDF
+      // Si OK, ouverture du PDF
       if (json && json.url) {
         window.open(json.url, '_blank');
       }
