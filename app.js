@@ -60,6 +60,7 @@ app.get('/api/folders-level1', async (req, res) => {
     });
     res.json(Array.from(level1).sort());
   } catch (err) {
+    console.error("❌ Erreur /api/folders-level1 :", err);
     res.status(500).json({ error: err.message });
   }
 });
