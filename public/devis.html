@@ -1837,37 +1837,36 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
-document.getElementById('contactForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const form = e.target;
-  const data = Object.fromEntries(new FormData(form)); // converti en objet
+  document.getElementById('contactForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
 
-  try {
-    const res = await fetch('https://snapandshotphotobooth.onrender.com/api/generate-pdf', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
+    try {
+      const res = await fetch('https://snapandshotphotobooth.onrender.com/api/generate-pdf', {
+        method: 'POST',
+        body: formData
+      });
 
-    const json = await res.json(); // lecture unique
-    console.log('Réponse du serveur:', json);
+      const json = await res.json(); // lecture unique ici
+      console.log('Réponse du serveur:', json);
 
-    if (!res.ok) {
-      console.error('Erreur serveur:', json);
-      alert('Erreur serveur : ' + (json.error || res.statusText));
-      return;
+      if (!res.ok) {
+        console.error('Erreur serveur:', json);
+        alert('Erreur serveur : ' + (json.error || res.statusText));
+        return;
+      }
+
+      // Si OK, ouverture du PDF
+      if (json && json.url) {
+        window.open(json.url, '_blank');
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de la requête fetch:', error);
+      alert('Erreur réseau ou serveur, merci de réessayer.');
     }
-
-    if (json && json.url) {
-      window.open(json.url, '_blank');
-    }
-  } catch (error) {
-    console.error('Erreur lors de la requête fetch:', error);
-    alert('Erreur réseau ou serveur, merci de réessayer.');
-  }
-});
+  });
 </script>
 
 </body>
