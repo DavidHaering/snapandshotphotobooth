@@ -2,7 +2,6 @@ const PDFDocument = require('pdfkit');
 const { Storage } = require('@google-cloud/storage');
 const streamBuffers = require('stream-buffers');
 const axios = require('axios');
-
 const path = require('path');
 
 // Variables d'environnement pour les polices et bucket
@@ -45,32 +44,12 @@ async function uploadPdfToGCS(formData) {
     const policeConditionsGen = 11
     const policeTexte = 11
 
-    function bulletPoint(text) {
-      const bulletX = margeGauche + 21.25;
-      const textX = margeGauche + 35.43;
-      const maxWidth = margeDroite - textX;
-      doc.text('•', bulletX, doc.y, { lineBreak: false });
-      doc.text(text, textX, doc.y, {
-        width: maxWidth,
-        align: 'justify'
-      });
-      doc.moveDown(0.3);
-    }
-
-    function checkPageBreak() {
-      if (y + interligne > pageHeight - margeBasse) {
-        doc.addPage();
-        y = margeHaute;
-      }
-    }
-
-
     const doc = new PDFDocument({
       size: 'A4',
-      margins: { 
-        top: margeHaute, 
+      margins: {
+        top: margeHaute,
         bottom: margeBasse,
-        left: margeGauche 
+        left: margeGauche
       }
     });
 
@@ -95,6 +74,25 @@ async function uploadPdfToGCS(formData) {
       console.error('🚨 Erreur PDFDocument :', err);
     });
 
+    function bulletPoint(text) {
+      const bulletX = margeGauche + 21.25;
+      const textX = margeGauche + 35.43;
+      const maxWidth = margeDroite - textX;
+      doc.text('•', bulletX, doc.y, { lineBreak: false });
+      doc.text(text, textX, doc.y, {
+        width: maxWidth,
+        align: 'justify'
+      });
+      doc.moveDown(0.3);
+    }
+
+    function checkPageBreak() {
+      if (y + interligne > pageHeight - margeBasse) {
+        doc.addPage();
+        y = margeHaute;
+      }
+    }
+
     function formatWithApostrophe(number) {
       const parts = number.toString().split('.');
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
@@ -103,7 +101,7 @@ async function uploadPdfToGCS(formData) {
 
     let y = margeHaute + interligne * 5;
 
-    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// STOP FORMATTING, START OF THE LOGS XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     console.log('formData reçu:', formData);
 
@@ -384,7 +382,7 @@ async function uploadPdfToGCS(formData) {
     const totaldevis = formData.totaldevis || '';
     const vntotaldevis = parseFloat(totaldevis.replace('CHF', '').trim()) || 0;
 
-    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+// STOP LOGS, START OF PDF XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // --- Logo ---
     try {
@@ -399,39 +397,33 @@ async function uploadPdfToGCS(formData) {
       doc.fontSize(12).fillColor('red').text('[Logo manquant]', { align: 'left' });
     }
 
-await new Promise((resolve, reject) => {
-  writableBuffer.on('finish', resolve);
-  writableBuffer.on('error', reject);
-});
+doc.text('Rue Pierre de Savoie 9', margeGauche, y, { width: margeParagraph });
 
-doc.end();
+// MON CODE
 
-await finishPromise;
+// STOP PDF, START OF END OF CODE XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-const pdfBuffer = writableBuffer.getContents();
+    doc.end();
 
-if (!pdfBuffer || !Buffer.isBuffer(pdfBuffer)) {
-  throw new Error('Le buffer PDF est vide ou non valide');
+    // Attendre que le buffer soit rempli
+    await new Promise((resolve, reject) => {
+      writableBuffer.on('finish', resolve);
+      writableBuffer.on('error', reject);
+    });
+
+    // Envoi vers Google Cloud Storage
+    const fileName = `devis-${Date.now()}.pdf`;
+    const file = storage.bucket(bucketName).file(fileName);
+    await file.save(writableBuffer.getContents(), {
+      metadata: { contentType: 'application/pdf' }
+    });
+
+    console.log(`✅ PDF uploaded to ${fileName}`);
+    return `https://storage.googleapis.com/${bucketName}/${fileName}`;
+  } catch (err) {
+    console.error('❌ Erreur lors de la génération du PDF :', err);
+    throw err;
+  }
 }
 
-// upload dans GCS
-const fileName = `PDFDevis/devis_${Date.now()}.pdf`;
-const bucket = storage.bucket(bucketName);
-const file = bucket.file(fileName);
-
-await file.save(pdfBuffer, {
-  contentType: 'application/pdf',
-  resumable: false,
-});
-
-console.log('PDF uploadé à:', `https://storage.googleapis.com/${bucketName}/${fileName}`);
-
-return `https://storage.googleapis.com/${bucketName}/${fileName}`;
-
-} catch (error) {
-  console.error('Erreur lors de la génération/upload PDF:', error);
-  throw error;
-}
-}  // <-- vérifie que cette accolade ferme bien la fonction uploadPdfToGCS
-
-module.exports = { uploadPdfToGCS };
+module.exports = uploadPdfToGCS;
