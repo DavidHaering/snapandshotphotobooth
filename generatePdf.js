@@ -82,6 +82,19 @@ async function uploadPdfToGCS(formData) {
     doc.registerFont('Calibri-Italic', calibriItalicPath);
     doc.pipe(writableBuffer);
 
+    writableBuffer.on('close', () => {
+      console.log('🚨 writableBuffer fermé (close)');
+    });
+    writableBuffer.on('error', (err) => {
+      console.error('🚨 writableBuffer error :', err);
+    });
+    doc.on('close', () => {
+      console.log('📄 PDFDocument fermé (close)');
+    });
+    doc.on('error', (err) => {
+      console.error('🚨 Erreur PDFDocument :', err);
+    });
+
     function formatWithApostrophe(number) {
       const parts = number.toString().split('.');
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
@@ -374,17 +387,17 @@ async function uploadPdfToGCS(formData) {
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     // --- Logo ---
-try {
-  const response = await axios.get('https://storage.googleapis.com/snapandshot-media-prod-2025/Logo.png', {
+    try {
+      const response = await axios.get('https://storage.googleapis.com/snapandshot-media-prod-2025/Logo.png', {
     responseType: 'arraybuffer'
-  });
-  const logoBuffer = Buffer.from(response.data, 'binary');
-  doc.image(logoBuffer, margeGauche, margeHaute, { width: 160 });
-} catch (err) {
-  console.error('❌ Erreur chargement logo ou image invalide :', err);
-  // Optionnel : mettre un placeholder texte à la place
-  doc.fontSize(12).fillColor('red').text('[Logo manquant]', { align: 'left' });
-}
+      });
+      const logoBuffer = Buffer.from(response.data, 'binary');
+      doc.image(logoBuffer, margeGauche, margeHaute, { width: 160 });
+    } catch (err) {
+      console.error('❌ Erreur chargement logo ou image invalide :', err);
+      // Optionnel : mettre un placeholder texte à la place
+      doc.fontSize(12).fillColor('red').text('[Logo manquant]', { align: 'left' });
+    }
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
