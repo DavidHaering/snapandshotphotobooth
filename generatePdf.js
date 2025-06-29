@@ -1212,8 +1212,14 @@ async function uploadPdfToGCS(formData) {
 
     // Attendre la fin de l'écriture dans le buffer
     await new Promise((resolve, reject) => {
-      writableBuffer.on('finish', resolve);
-      writableBuffer.on('error', reject);
+      writableBuffer.on('finish', () => {
+        console.log('WritableBuffer finish event reçu');
+        resolve();
+      });
+      writableBuffer.on('error', err => {
+        console.error('Erreur writableBuffer:', err);
+        reject(err);
+      });
     });
 
     const pdfBuffer = writableBuffer.getContents();
@@ -1236,11 +1242,16 @@ async function uploadPdfToGCS(formData) {
 
   stream.on('finish', resolve);
   stream.on('error', err => {
-    console.error('❌ Erreur dans le stream GCS :', err);
+    console.error('Erreur stream GCS:', err);
     reject(err);
   });
 
-  stream.end(pdfBuffer);
+  try {
+    stream.end(pdfBuffer);
+  } catch (err) {
+    console.error('Erreur stream.end:', err);
+    reject(err);
+  }
 });
 
     // URL publique (si ton bucket est public)
