@@ -1259,4 +1259,6 @@ await new Promise((resolve, reject) => {
   stream.end(pdfBuffer);
 });
 
+}
+
 module.exports = { uploadPdfToGCS };
