@@ -111,17 +111,16 @@ app.post('/api/generate-pdf', upload.fields([
 ]), async (req, res) => {
   console.log('✅ POST /api/generate-pdf reçu');
 
-  // 🧪 Debug temporaire
-  console.log('BODY:', req.body);
-  console.log('FILES:', req.files);
-  res.json({ test: true });
-  return;
-
-  // 🔽 Le code ci-dessous sera ignoré tant que le `return` est là
   try {
     if (!req.files) {
       throw new Error("❌ Aucun fichier n’a été reçu.");
     }
+
+  // 👇 DEBUG ici
+  console.log('BODY:', req.body);
+  console.log('FILES:', req.files);
+  res.json({ test: true });
+  return;
 
     const fichier1 = req.files['fichierJoint1']?.[0] || null;
     const fichier2 = req.files['fichierJoint2']?.[0] || null;
