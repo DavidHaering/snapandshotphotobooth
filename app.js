@@ -104,42 +104,52 @@ app.get('/test', (req, res) => {
 });
 
 // Route génération PDF
+
 app.post('/api/generate-pdf', upload.fields([
   { name: 'fichierJoint1', maxCount: 1 },
   { name: 'fichierJoint2', maxCount: 1 }
 ]), async (req, res) => {
   console.log('✅ POST /api/generate-pdf reçu');
 
-  // Les fichiers reçus
-  console.log('Fichiers reçus:', req.files);
+  // 🧪 Debug temporaire
+  console.log('BODY:', req.body);
+  console.log('FILES:', req.files);
+  res.json({ test: true });
+  return;
 
-  // Les autres données (texte, checkbox, etc.)
-  console.log('Données:', req.body);
-
-  const fichier1 = req.files['fichierJoint1'] ? req.files['fichierJoint1'][0] : null;
-  const fichier2 = req.files['fichierJoint2'] ? req.files['fichierJoint2'][0] : null;
-
+  // 🔽 Le code ci-dessous sera ignoré tant que le `return` est là
   try {
+    if (!req.files) {
+      throw new Error("❌ Aucun fichier n’a été reçu.");
+    }
+
+    const fichier1 = req.files['fichierJoint1']?.[0] || null;
+    const fichier2 = req.files['fichierJoint2']?.[0] || null;
+
     const pdfUrl = await uploadPdfToGCS({
       ...req.body,
       fichierJoint1: fichier1,
       fichierJoint2: fichier2,
     });
 
-    const recipientEmail = req.body.email;  // <== À ajouter ici
+    if (!pdfUrl) {
+      throw new Error("❌ URL du PDF non générée.");
+    }
 
+    const recipientEmail = req.body.email;
     if (recipientEmail) {
       console.log(`📧 Envoi du PDF à ${recipientEmail}`);
       await sendEmail(pdfUrl, recipientEmail);
     } else {
-      console.warn("⚠️ Aucune adresse email fournie pour l'envoi du PDF.");
+      console.warn("⚠️ Aucune adresse email fournie.");
     }
 
     res.json({ url: pdfUrl });
+
   } catch (err) {
-      console.error('❌ Erreur génération PDF:', err);
-      if (err.stack) console.error('🧵 Stack trace:', err.stack);
-      res.status(500).json({ error: err.message || 'Erreur serveur' });
+    console.error('❌ Erreur lors du traitement de la requête:', err.message);
+    if (err.stack) console.error('🧵 Stack trace:', err.stack);
+    res.status(500).json({ error: err.message || 'Erreur serveur' });
   }
 });
 
