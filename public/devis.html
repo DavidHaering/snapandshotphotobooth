@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulaire de Devis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #FBF9ED;
+      margin: 2em auto;
+      max-width: 700px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+
+    .row {
+      display: flex;
+      gap: 0.75em;
+      align-items: center;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input, select {
+      padding: 0.5em;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      box-sizing: border-box;
+      background-color: transparent;
+    }
+    select {
+      border: 1px solid black;
+      border-radius: 10px;
+      padding: 0.5em;
+    }
+
+    input, textarea, select {
+      background-color: #FBF9ED;
+    }
+
+    input:-webkit-autofill,
+    textarea:-webkit-autofill,
+    select:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #FBF9ED inset !important;
+      -webkit-text-fill-color: #000000 !important;
+    }
+
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #FBF9ED inset !important;
+      -webkit-text-fill-color: #000000 !important;
+    }
+
+    .field.CFIRSTLASTNAME {
+      width: 40%;
+    }
+    .field.CFIRSTLASTNAME input {
+      border: 1px solid black;
+    }
+
+    .field.CTITLE {
+      width: 20%;
+    }
+    .field.CTITLE input {
+      border: 1px solid black;
+    }
+
+    .field.CLINE {
+      width: 100%;
+    }
+    .field.CLINE input {
+      border: 1px solid black;
+    }
+    .field.CLINE2 {
+      width: 100%;
+    }
+    .field.CLINE2 input {
+      border: 1px solid black;
+    }
+    .field.CLINE2 textarea {
+      margin-top: 0;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    .field.CMAILPHONE {
+      width: 50%;
+    }
+    .field.CMAILPHONE input {
+      border: 1px solid black;
+    }
+
+    .field.CADDRESSEVENT {
+      width: 70%;
+    }
+    .field.CADDRESSEVENT input {
+      border: 1px solid black;
+    }
+
+    .field.CKM {
+      width: 30%;
+    }
+    .field.CKM input {
+      border: 1px solid black;
+    }
+
+    .field.CLIEU {
+      width: 45%;
+    }
+    .field.CLIEU input {
+      border: 1px solid black;
+    }
+
+    .field.CDATE {
+      width: 25%;
+    }
+    .field.CDATE input {
+      border: 1px solid black;
+    }
+
+    .field.CNAME {
+      width: 50%;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .field.CNAME2 {
+      width: 38%;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .field.CQTY {
+      width: 10%;
+    }
+    .field.CHOUR {
+      width: 12%;
+    }
+    .field.CPRICE {
+      width: 15%;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .field.CTOTAL {
+      width: 25%;
+      text-align: right;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .main-text {
+      font-size: 1em;
+      margin-left: 0.5em;
+    }
+    .sub-text {
+      font-size: 0.8em;
+      color: #555;
+      margin-left: 0.2em;
+    }
+    .field.CLIVRAISON {
+      width: 25%;
+      text-align: right;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .field.CDEVIS {
+      width: 75%;
+    }
+
+    label {
+      font-size: 0.75em;
+      margin-bottom: 0.2em;
+      color: #555;
+    }
+
+    button {
+      width: fit-content;
+      padding: 0.6em 1.4em;
+      font-size: 1em;
+      background-color: #C19E5D;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0d74d1;
+    }
+
+    #autreEventLabel {
+      display: none;
+    }
+
+    /* TITRE DU FORMULAIRE */
+    h1 {
+      font-size: 2em;
+      margin-bottom: 1em;
+      text-align: center;
+      color: #C19E5D;
+    }
+
+    /* TITRE DES SECTIONS */
+    h2 {
+      font-size: 1.4em;
+      margin: 0;
+      padding: 0.7em 0 0.3em 0;
+      color: #333;
+      font-weight: normal;
+    }
+
+    /* LIGNES SEPARATRICES */
+    hr.section-divider {
+      border: none;
+      border-bottom: 1px solid black;
+      margin: 0 0 0.7em 0;
+      padding: 0;
+    }
+
+    /* CHECKBOX */
+   .checkbox-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(2);
+      accent-color: black;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    /* RECOMMANDATION NOMBRE DE PHOTOBOOTH */
+    #messagePhotobooth {
+      color: red;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 0.3em;
+    }
+
+    /* RECOMMANDATION IMPRIMANTE */
+    #messageImprimante1 {
+      color: black;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 0.3em;
+    }
+    #messageImprimante2 {
+      color: black;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 0.3em;
+    }
+
+    /* RECOMMANDATION TOILE PERSONNALISEE */
+    #messageToile {
+      color: black;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 0.3em;
+    }
+
+    /* RECOMMANDATION HOTE */
+    #messageHote {
+      color: black;
+      font-style: italic;
+      font-size: 0.85em;
+      margin-top: 0.3em;
+    }
+
+    </style>
+</head>
+<body>
+  <h1>Formulaire de Devis</h1>
+
+    <form id="contactForm" method="POST" enctype="multipart/form-data">
+
+    <h2>Contact</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CTITLE">
+        <label for="titre">Titre</label>
+        <select id="titre" name="titre" autocomplete="honorific-prefix" required>
+          <option value="" disabled selected></option>
+          <option value="Monsieur">Monsieur</option>
+          <option value="Madame">Madame</option>
+        </select>
+      </div>
+      <div class="field CFIRSTLASTNAME">
+        <label for="nom">Nom</label>
+        <input type="text" id="nom" name="nom" autocomplete="family-name" required />
+      </div>
+      <div class="field CFIRSTLASTNAME">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" name="prenom" autocomplete="given-name" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CLINE">
+        <label for="entreprise">Entreprise</label>
+        <input type="text" id="entreprise" name="entreprise" autocomplete="organization" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="field CLINE">
+        <label for="adresse">Adresse</label>
+        <input type="text" id="adresse" name="adresse" autocomplete="address-line1" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CLINE">
+        <label for="adresse2">Adresse 2</label>
+        <input type="text" id="adresse2" name="adresse2" autocomplete="address-line2" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CTITLE">
+        <label for="codePostal">Code postal</label>
+        <input type="number" id="codePostal" name="codePostal" autocomplete="postal-code" required />
+      </div>
+      <div class="field CFIRSTLASTNAME">
+        <label for="ville">Localité</label>
+        <input type="text" id="ville" name="ville" autocomplete="address-level2" required />
+      </div>
+      <div class="field CFIRSTLASTNAME">
+        <label for="pays">Pays</label>
+        <select id="pays" name="pays" autocomplete="country" required ></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CMAILPHONE">
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required />
+      </div>
+      <div class="field CMAILPHONE">
+        <label for="telephone">Téléphone</label>
+        <input type="tel" id="telephone" name="telephone" autocomplete="tel" required />
+      </div>
+    </div>
+
+
+    <br>
+    <h2>Événement</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CADDRESSEVENT">
+        <label for="typeEvent">Type d'événement</label>
+        <select id="typeEvent" name="typeEvent" required>
+          <option value="" disabled selected></option>
+          <option value="Anniversaire">Anniversaire</option>
+          <option value="Baptême">Baptême</option>
+          <option value="Exposition">Exposition</option>
+          <option value="Foire">Foire</option>
+          <option value="Journée portes ouvertes">Journée portes ouvertes</option>
+          <option value="Mariage">Mariage</option>
+          <option value="Salon">Salon</option>
+          <option value="Soirée d'entreprise">Soirée d'entreprise</option>
+          <option value="Événement sportif">Événement sportif</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+      <div class="field CKM">
+        <label for="themeEvent">Thème de l'événement</label>
+        <input type="text" id="themeEvent" name="themeEvent" />
+      </div>
+    </div>
+
+    <div class="field CLINE" id="autreEventLabel">
+      <label for="autreEvent" style="display: block; margin-bottom: 2px;">
+        Précisez le type d'événement
+      </label>
+      <input type="text" id="autreEvent" name="autreEvent" style="width: 100%;" />
+    </div>
+
+    <div class="row">
+      <div class="field CLIEU">
+        <label for="LieuEvent">Lieu de l'événement</label>
+        <input type="text" id="LieuEvent" name="LieuEvent" />
+      </div>
+      <div class="field CDATE">
+        <label for="DateEvent">Date de l'événement</label>
+        <input type="date" id="DateEvent" name="DateEvent" style="height: 36px; padding: 10px; font-size: 16px;" />
+      </div>
+      <div class="field CKM">
+        <label for="nbParticipants">Nombre de participants (environ)</label>
+        <input type="number" id="nbParticipants" name="nbParticipants" min="0" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CADDRESSEVENT">
+        <label for="adresseEvent">Adresse de l'événement</label>
+        <input id="adresseEvent" name="adresseEvent" type="text" placeholder="" required/>
+      </div>
+      <div class="field CKM">
+        <label for="nbrekilometre">Distance depuis CH-1680 Romont</label>
+        <input id="nbrekilometre" name="nbrekilometre" type="text" readonly placeholder="" />
+      </div>
+    </div>
+
+    <br>
+    <h2>Photobooth / Videobooth</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="photoboothOvale">&nbsp;</label>
+        <input type="text" id="photoboothOvale" name="photoboothOvale" value="L'Ovale" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteOvale">&nbsp;&nbsp;Quantité</label>
+        <select id="quantiteOvale" name="quantiteOvale"  style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireOvale">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitaireOvale" name="prixUnitaireOvale" value="CHF 299.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalOvale">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalOvale" name="totalOvale" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="photoboothMiniMiroir" name="photoboothMiniMiroir" value="Le Mini Miroir" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteMiniMiroir" name="quantiteMiniMiroir" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireMiniMiroir" name="prixUnitaireMiniMiroir" value="CHF 399.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalMiniMiroir" name="totalMiniMiroir" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="photoboothMiroirMagique" name="photoboothMiroirMagique" value="Le Miroir Magique" readonly tabindex="-1">
+      </div>
+    <div class="field CQTY"> 
+      <select id="quantiteMiroirMagique" name="quantiteMiroirMagique" style="text-align: center">
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireMiroirMagique" name="prixUnitaireMiroirMagique" value="CHF 499.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalMiroirMagique" name="totalMiroirMagique" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="photobooth360" name="photobooth360" value="Le 360°" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantite360" name="quantite360" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaire360" name="prixUnitaire360" value="CHF 699.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="total360" name="total360" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div id="messagePhotobooth" style="display:none;">
+      NB: Nous recommandons généralement de louer 1 photobooth / videobooth par 150 participants afin d'éviter les files d'attente. Toutefois, il est possible de favoriser les prises de groupe, de n'utiliser qu'un seul format photo, d'enlever les filtres, et/ou d'engager un hôte ou une hôtesse pour gérer l'animation durant la soirée, afin d'accélérer le flux de personnes.
+    </div>
+
+    <br>
+    <h2>Livraison / Installation / Démontage / Retrait</h2>
+    <hr class="section-divider" />
+
+    <div class="row" style="gap: 1em; font-size: 1.4em; align-items: center;">
+      <label style="display: flex; align-items: center; gap: 0.5em; cursor: pointer; color: black;">
+        <input type="checkbox" id="option1" name="option1" checked onchange="exclusiveToggle('option1', 'option2')" />
+        Prise en charge par Snap&Shot Photobooth
+      </label>
+
+      <label style="display: flex; align-items: center; gap: 0.5em; cursor: pointer; color: black; margin-left: 3.8em;">
+        <input type="checkbox" id="option2" name="option2" onchange="exclusiveToggle('option2', 'option1')" />
+        Prise en charge par le client
+      </label>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="Nombredephotobooth">&nbsp;</label>
+        <input type="text" id="Nombredephotobooth" name="Nombredephotobooth" value="Nombre de photobooth" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteNombredephotobooth">Quantité</label>
+        <input type="number" id="quantiteNombredephotobooth" name="quantiteNombredephotobooth"" value="0" style="text-align: center">
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireNombredephotobooth">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitaireNombredephotobooth" name="prixUnitaireNombredephotobooth" value="CHF 50.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalNombredephotobooth"" style="text-align: right; display: inline-block; width: 190px;">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalNombredephotobooth" name="totalNombredephotobooth" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Nombredekilometres" name="Nombredekilometres" value="Nombre de kilomètres" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <input type="number" id="quantiteNombredekilometres" name="quantiteNombredekilometres" value="0" style="text-align: center">
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireNombredekilometres" name="prixUnitaireNombredekilometres" value="CHF 0.70" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalNombredekilometres" name="totalNombredekilometres" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CLIVRAISON">
+        <input type="text" id="Livraison" name="Livraison" value="Date de livraison" readonly tabindex="-1">
+      </div>
+      <div class="field CDATE">
+        <input type="date" id="DateLivraison" name="DateLivraison" style="height: 36px; padding: 10px; font-size: 16px;" />
+      </div>
+      <div class="field CLIVRAISON">
+        <input type="text" id="HLivraison" name="HLivraison" value="Heure" readonly tabindex="-1" style="text-align: center; height: 36px; padding: 10px; font-size: 16px;" />
+      </div>
+      <div class="field CDATE">
+        <input type="time" id="HeureLivraison" name="HeureLivraison" value="14:00" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field CLIVRAISON">
+        <input type="text" id="Retrait" name="Retrait" value="Date de retrait" readonly tabindex="-1">
+      </div>
+      <div class="field CDATE">
+        <input type="date" id="DateRetrait" name="DateRetrait" style="height: 36px; padding: 10px; font-size: 16px;" />
+      </div>
+      <div class="field CLIVRAISON">
+        <input type="text" id="HRetrait" name="HRetrait" value="Heure" readonly tabindex="-1" style="text-align: center; height: 36px; padding: 10px; font-size: 16px;" />
+      </div>
+      <div class="field CDATE">
+        <input type="time" id="HeureRetrait" name="HeureRetrait" value="10:00" />
+      </div>
+    </div>
+
+    <br>
+    <h2>Impressions</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="PackImprimante1">&nbsp;</label>
+        <div>
+          <span class="main-text">Pack 1</span>
+          <span class="sub-text">(150photos 10x15cm / 300photos 5x15cm)</span>
+        </div>
+      </div>
+      <div class="field CQTY">
+        <label for="quantitePackImprimante1">Quantité</label>
+        <select id="quantitePackImprimante1" name="quantitePackImprimante1" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitairePackImprimante1">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitairePackImprimante1" name="prixUnitairePackImprimante1" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalPackImprimante1">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalPackImprimante1" name="totalPackImprimante1" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <div>
+          <span class="main-text">Pack 2</span>
+          <span class="sub-text">(350photos 10x15cm / 700photos 5x15cm)</span>
+        </div>
+      </div>
+      <div class="field CQTY">
+        <select id="quantitePackImprimante2" name="quantitePackImprimante2" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitairePackImprimante2" name="prixUnitairePackImprimante2" value="CHF 150.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalPackImprimante2" name="totalPackImprimante2" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <div>
+          <span class="main-text">Pack 3</span>
+          <span class="sub-text">(500photos 10x15cm / 1,000photos 5x15cm)</span>
+        </div>
+      </div>
+      <div class="field CQTY">
+        <select id="quantitePackImprimante3" name="quantitePackImprimante3" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitairePackImprimante3" name="prixUnitairePackImprimante3" value="CHF 200.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalPackImprimante3" name="totalPackImprimante3" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <div>
+          <span class="main-text">Pack 4</span>
+          <span class="sub-text">(700photos 10x15cm / 1,400photos 5x15cm)</span>
+        </div>
+      </div>
+      <div class="field CQTY">
+        <select id="quantitePackImprimante4" name="quantitePackImprimante4" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitairePackImprimante4" name="prixUnitairePackImprimante4" value="CHF 250.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalPackImprimante4" name="totalPackImprimante4" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div id="messageImprimante1" style="display:none;">
+      NB: Nos imprimantes ne peuvent pas être connectées à plusieurs photobooth en même temps. Si vous voulez avoir la fonctionnalité "imprimer" sur tous les photobooth, il faut prendre un pack impression par photobooth. Tous nos photobooth sont connectés à leur propre réseau wifi (si le lieu de l'événement le permet), et ont leur propre fonctionnalité d'envoyer les photos soit par Email, Whatsapp, ou de les télécharger par QR code.
+    </div>
+    <div id="messageImprimante2" style="display:none;">
+      NB: Nos imprimantes ne peuvent pas être connectées à nos videobooth. Tous nos videobooth sont connectés à leur propre réseau wifi (si le lieu de l'événement le permet), et ont leur propre fonctionnalité d'envoyer les vidéos soit par Email, Whatsapp, ou de les télécharger par QR code.
+    </div>
+
+    <br>
+    <h2>Toiles de fond</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="Toile1">&nbsp;</label>
+        <input type="text" id="Toile1" name="Toile1" value="Blanc" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteToile1">Quantité</label>
+        <select id="quantiteToile1" name="quantiteToile1" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireToile1">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitaireToile1" name="prixUnitaireToile1" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalToile1">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalToile1" name="totalToile1" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile2" name="Toile2" value="Noir" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile2" name="quantiteToile2" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile2" name="prixUnitaireToile2" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile2" name="totalToile2" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile3" name="Toile3" value="Beige" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile3" name="quantiteToile3" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile3" name="prixUnitaireToile3" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile3" name="totalToile3" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile4" name="Toile4" value="Lumières" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile4" name="quantiteToile4" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile4" name="prixUnitaireToile4" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile4" name="totalToile4" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile5" name="Toile5" value="Argent" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile5" name="quantiteToile5" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile5" name="prixUnitaireToile5" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile5" name="totalToile5" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile6" name="Toile6" value="Doré" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile6" name="quantiteToile6" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile6" name="prixUnitaireToile6" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile6" name="totalToile6" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile7" name="Toile7" value="Scintillant turquoise" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile7" name="quantiteToile7" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile7" name="prixUnitaireToile7" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile7" name="totalToile7" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile8" name="Toile8" value="Fleurs blanches" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile8" name="quantiteToile8" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile8" name="prixUnitaireToile8" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile8" name="totalToile8" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile9" name="Toile9" value="Verdure" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile9" name="quantiteToile9" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile9" name="prixUnitaireToile9" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile9" name="totalToile9" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile10" name="Toile10" value="Cadre verdure" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile10" name="quantiteToile10" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile10" name="prixUnitaireToile10" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile10" name="totalToile10" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile11" name="Toile11" value="Cuivre" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile11" name="quantiteToile11" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile11" name="prixUnitaireToile11" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile11" name="totalToile11" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile12" name="Toile12" value="360°" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile12" name="quantiteToile12" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile12" name="prixUnitaireToile12" value="CHF 250.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile12" name="totalToile12" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile13" name="Toile13" value="Selon catalogue" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile13" name="quantiteToile13" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile13" name="prixUnitaireToile13" value="CHF 200.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile13" name="totalToile13" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div id="messageToile1" style="display:none;">
+      NB: Pour les demandes de toile selon catalogue, merci de bien vouloir préciser le numéro de la toile dans les commentaires. Il nous faut environ 4 à 6 semaines pour recevoir la toile selon catalogue de notre fournisseur.
+    </div>
+
+    <div class="row">
+      <div class="field CNAME">
+        <input type="text" id="Toile14" name="Toile14" value="Personnalisé avec votre visuel" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <select id="quantiteToile14" name="quantiteToile14" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <input type="text" id="prixUnitaireToile14" name="prixUnitaireToile14" value="CHF 200.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <input type="text" id="totalToile14" name="totalToile14" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div id="messageToile2" style="display:none;">
+      NB: Pour les demandes de toile personnalisée, merci de bien vouloir joindre votre visuel après les commentaires. Nous avons besoin d'un document pdf ou image 4K (3840 × 2160 pixels) afin de garantir une qualité optimale. Il nous faut environ 4 à 6 semaines pour recevoir la toile personnalisée de notre fournisseur.
+    </div>
+
+    <br>
+    <h2>Machines à fumée et à bulles</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="MachineFumeeBulle">&nbsp;</label>
+        <input type="text" id="MachineFumeeBulle" name="MachineFumeeBulle" value="Machine à fumée et à bulles" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteMachineFumeeBulle">Quantité</label>
+        <select id="quantiteMachineFumeeBulle" name="quantiteMachineFumeeBulle" style="text-align: center">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireMachineFumeeBulle">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitaireMachineFumeeBulle" name="prixUnitaireMachineFumeeBulle" value="CHF 100.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalMachineFumeeBulle">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalMachineFumeeBulle" name="totalMachineFumeeBulle" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <br>
+    <h2>Accessoires</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME">
+        <label for="Accessoires1">&nbsp;</label>
+        <input type="text" id="Accessoires1" name="Accessoires1" value="Selon le thème de l'événement" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteAccessoires1">Quantité</label>
+        <select id="quantiteAccessoires1" name="quantiteAccessoires1" style="text-align: center">
+          <!-- options 0 à 1 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireAccessoires1">&nbsp;&nbsp;Prix à l'unité</label>
+        <input type="text" id="prixUnitaireAccessoires1" name="prixUnitaireAccessoires1" value="CHF 30.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalAccessoires1">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalAccessoires1" name="totalAccessoires1" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <br>
+    <h2>Hôtes / Hôtesses</h2>
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="field CNAME2">
+        <label for="HotesHotesses">&nbsp;</label>
+        <input type="text" id="HotesHotesses" name="HotesHotesses" value="Hôtes / Hôtesses" readonly tabindex="-1">
+      </div>
+      <div class="field CQTY">
+        <label for="quantiteHotesHotesses">Quantité</label>
+        <select id="quantiteHotesHotesses" name="quantiteHotesHotesses">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+      <div class="field CHOUR">
+        <label for="heureHotesHotesses">Heures</label>
+        <select id="heureHotesHotesses" name="heureHotesHotesses">
+          <!-- options 0 à 10 -->
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+          <option value="20">20</option>
+          <option value="21">21</option>
+          <option value="22">22</option>
+          <option value="23">23</option>
+          <option value="24">24</option>
+        </select>
+      </div>
+      <div class="field CPRICE">
+        <label for="prixUnitaireHotesHotesses">&nbsp;&nbsp;Prix à l'heure</label>
+        <input type="text" id="prixUnitaireHotesHotesses" name="prixUnitaireHotesHotesses" value="CHF 25.00" readonly tabindex="-1">
+      </div>
+      <div class="field CTOTAL">
+        <label for="totalHotesHotesses">Total&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" id="totalHotesHotesses" name="totalHotesHotesses" value="CHF 0.00" readonly tabindex="-1" style="text-align: right">
+      </div>
+    </div>
+
+    <div id="messageHote" style="display:none;">
+      NB: Ce devis n'inclut pas les frais de déplacement pour nous hôtes/hôtesses. Après l'envoi du devis initial, nous vous renverrons par email une nouvelle proposition incluant ces frais pour acceptation.
+    </div>
+
+    <br>
+    <h2>Photos / Écran d'accueil</h2>
+    <hr class="section-divider" />
+
+    <label for="level1" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Catégorie d'événement</label>
+      <select id="level1">
+        <option value="">-- Choisissez --</option>
+      </select>
+
+    <label for="level2" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Style</label>
+      <select id="level2" disabled>
+        <option value="">-- Choisissez et sélectionnez les formats --</option>
+      </select>
+
+    <div id="imagePreview"></div>
+
+    <br>
+    <div class="field CLINE2">
+      <label for="commentaires">Commentaires</label>
+      <textarea id="commentaires" name="commentaires" rows="8"></textarea>
+    </div>
+
+    <div class="field CLINE2">
+      <label for="fichierJoint1">Joindre un fichier 1 (PDF ou image)</label>
+      <input type="file" id="fichierJoint1" name="fichierJoint1" accept=".pdf,image/*" />
+    </div>
+
+    <div class="field CLINE2">
+      <label for="fichierJoint2">Joindre un fichier 2 (PDF ou image)</label>
+      <input type="file" id="fichierJoint2" name="fichierJoint2" accept=".pdf,image/*" />
+    </div>
+
+    <br>
+    <div>
+      <label>
+        <input type="checkbox" name="acceptCGV" required style="margin-right: 12px;">
+          <strong>
+            J'ai lu et j'accepte les
+            <a href="https://res.cloudinary.com/dbfjjjavb/image/upload/v1750090161/Conditions_G%C3%A9n%C3%A9rales_de_Location_-_SnapandShot_Photobooth_u1zwtk.pdf"
+               target="_blank"
+               rel="noopener noreferrer">
+               conditions générales de location
+            </a>
+          </strong>
+      </label>
+    </div>
+
+    <br>
+    <div>
+      <label style="display: flex; align-items: flex-start; line-height: 1.5;">
+        <input type="checkbox" name="acceptCGV" required style="margin-right: 12px; margin-top: 5px;">
+          <div style="max-width: 100%; text-align: justify;">
+            <div>
+              <strong>
+                Particulièrement le point 11 sur la confidentialité et protection des données :
+              </strong>
+            </div>
+
+            <div>
+              Le client autorise, sauf opposition écrite, l’utilisation à des fins promotionnelles
+              des images générées par le photobooth/ videobooth, dans le respect de la législation
+              suisse en vigueur sur le droit à l’image et à la vie privée.
+            </div>
+
+            <div style="color: red;">
+              Le client est responsable d’informer ses invités de la prise de vues et de recueillir leur consentement,
+              conformément à la législation suisse sur la protection des données. Le loueur ne pourra être tenu responsable
+              d’un usage non autorisé d’image sans l’accord des personnes photographiées.
+            </div>
+          </div>
+      </label>
+    </div>
+
+    <hr class="section-divider" />
+
+    <div class="row">
+      <div class="CDEVIS">
+        <input type="text" id="Devis" name="Devis" value="Montant total du devis" readonly tabindex="-1" style="font-size: 25px;">
+      </div>
+      <div class="CTOTAL">
+        <input type="text" id="totaldevis" name="totaldevis" value="CHF 0.00" readonly tabindex="-1" style="font-size: 25px; text-align: right;">
+      </div>
+    </div>
+
+    <hr class="section-divider" />
+
+      <button type="submit">Envoyer</button>
+
+      <div id="result"></div>
+
+  </form>
+
+  <script>
+
+    const level1Select = document.getElementById('level1');
+    const level2Select = document.getElementById('level2');
+    const imagePreview = document.getElementById('imagePreview');
+
+    // Charge 1er niveau
+    fetch('/api/folders-level1')
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(folder => {
+          const option = document.createElement('option');
+          option.value = folder;
+          option.textContent = folder;
+          level1Select.appendChild(option);
+        });
+      });
+
+      level1Select.addEventListener('change', () => {
+        const folder = level1Select.value;
+        level2Select.innerHTML = '<option value="">-- Choisissez et sélectionnez les formats --</option>';
+        imagePreview.innerHTML = '';
+
+      if (!folder) {
+        level2Select.disabled = true;
+        return;
+      }
+
+      level2Select.disabled = false;
+
+      fetch(`/api/folders-level2/${encodeURIComponent(folder)}`)
+        .then(res => res.json())
+        .then(data => {
+          data.forEach(subfolder => {
+            const option = document.createElement('option');
+            option.value = subfolder;
+            option.textContent = subfolder;
+            level2Select.appendChild(option);
+          });
+        });
+    });
+
+level2Select.addEventListener('change', () => {
+  const folder = level1Select.value;
+  const subfolder = level2Select.value;
+  imagePreview.innerHTML = '';
+
+  if (!subfolder) return;
+
+  fetch(`/api/files/${encodeURIComponent(folder)}/${encodeURIComponent(subfolder)}`)
+    .then(res => res.json())
+    .then(data => {
+      // Filtrer les fichiers pour enlever ceux qui se terminent par .keep
+      const filteredData = data.filter(file => !file.endsWith('.keep'));
+
+      filteredData.forEach((file, index) => {
+        const fileUrl = `https://storage.googleapis.com/snapandshot-media-prod-2025/TemplatePhotobooth/${folder}/${subfolder}/${encodeURIComponent(file)}`;
+
+        const img = document.createElement('img');
+        img.src = fileUrl;
+        img.alt = file;
+
+        const container = document.createElement('div');
+        container.style.textAlign = 'center';
+
+        if (index === filteredData.length - 1) {
+          // Dernière image : 400px, centrée, sans checkbox
+          container.style.display = 'block';
+          container.style.width = '100%';
+          container.style.marginTop = '20px';  // <-- marge avant la dernière image
+
+          img.style.width = '400px';
+          img.style.height = 'auto';
+          img.style.display = 'block';
+          img.style.margin = '0 auto';
+
+          container.appendChild(img);
+        } else {
+          // Toutes les autres : inline + checkbox
+          container.style.display = 'inline-block';
+          container.style.margin = '10px';
+          container.style.verticalAlign = 'top';
+
+          img.style.maxWidth = '150px';
+          img.style.display = 'block';
+          img.style.margin = '0 auto';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.value = fileUrl;
+          checkbox.name = 'selectedFiles';
+          checkbox.style.display = 'block';
+          checkbox.style.margin = '10px auto 0 auto'; // marge au dessus, centré
+
+          container.appendChild(img);
+          container.appendChild(checkbox);
+        }
+
+        imagePreview.appendChild(container);
+      });
+    });
+});
+
+  // --- Liste des pays ---
+      const paysSelect = document.getElementById('pays');
+
+      const paysEuropeUSCanada = [
+        'Suisse','Afghanistan','Afrique du Sud','Albanie','Algérie','Allemagne','Andorre','Angola','Antigua-et-Barbuda','Arabie    saoudite','Argentine','Arménie','Australie','Autriche','Azerbaïdjan','Bahamas','Bahreïn',
+        'Bangladesh','Barbade','Belgique','Belize','Bénin','Bhoutan','Biélorussie','Birmanie','Bolivie','Bosnie-Herzégovine','Botswana','Brésil','Brunei','Bulgarie','Burkina Faso','Burundi','Cambodge','Cameroun',
+        'Canada','Cap-Vert','Chili','Chine','Chypre','Colombie','Comores','Congo-Brazzaville','Congo-Kinshasa','Corée du Nord','Corée du Sud','Costa Rica','Croatie','Cuba','Danemark','Djibouti','Dominique','Égypte',
+        'El Salvador','Émirats arabes unis','Équateur','Érythrée','Espagne','Estonie','Eswatini','États-Unis','Éthiopie','Fidji','Finlande','France','Gabon','Gambie','Géorgie','Ghana','Grèce','Grenade','Guatemala',
+        'Guinée','Guinée équatoriale','Guinée-Bissau','Guyana','Haïti','Honduras','Hongrie','Îles Cook','Îles Marshall','Inde','Indonésie','Irak','Iran','Irlande','Islande','Israël','Italie','Jamaïque','Japon',
+        'Jordanie','Kazakhstan','Kenya','Kirghizistan','Kiribati','Koweït','Laos','Lesotho','Lettonie','Liban','Libéria','Libye','Liechtenstein','Lituanie','Luxembourg','Macédoine du Nord','Madagascar','Malaisie',
+        'Malawi','Maldives','Mali','Malte','Maroc','Maurice','Mauritanie','Mexique','Micronésie','Moldavie','Monaco','Mongolie','Monténégro','Mozambique','Namibie','Nauru','Népal','Nicaragua','Niger','Nigéria','Norvège',
+        'Nouvelle-Zélande','Oman','Ouganda','Ouzbékistan','Pakistan','Palaos','Panama','Papouasie-Nouvelle-Guinée','Paraguay','Pays-Bas','Pérou','Philippines','Pologne','Portugal','Qatar','République centrafricaine',
+        'République dominicaine','République tchèque','Roumanie','Royaume-Uni','Russie','Rwanda','Saint-Kitts-et-Nevis','Saint-Marin','Saint-Vincent-et-les-Grenadines','Sainte-Lucie','Salomon','Samoa','São Tomé-et-Principe',
+        'Sénégal','Serbie','Seychelles','Sierra Leone','Singapour','Slovaquie','Slovénie','Somalie','Soudan','Soudan du Sud','Sri Lanka','Suède','Suriname','Syrie','Tadjikistan','Tanzanie','Tchad','Thaïlande','Timor oriental',
+        'Togo','Tonga','Trinité-et-Tobago','Tunisie','Turkménistan','Turquie','Tuvalu','Ukraine','Uruguay','Vanuatu','Vatican','Venezuela','Vietnam','Yémen','Zambie','Zimbabwe'
+      ];
+
+      // Trier la liste sauf Suisse
+      const paysSansSuisse = paysEuropeUSCanada.filter(p => p !== 'Suisse').sort((a,b) => a.localeCompare(b, 'fr'));
+
+      // Vider options
+      paysSelect.innerHTML = '';
+
+      // Ajouter Suisse en premier (sélectionné)
+      const optionSuisse = document.createElement('option');
+      optionSuisse.value = 'Suisse';
+      optionSuisse.textContent = 'Suisse';
+      optionSuisse.selected = true;
+      paysSelect.appendChild(optionSuisse);
+
+      // Ajouter le reste
+      paysSansSuisse.forEach(pays => {
+        const option = document.createElement('option');
+        option.value = pays;
+        option.textContent = pays;
+        paysSelect.appendChild(option);
+      });
+
+      // --- Gestion du type d'événement "Autre" ---
+      const typeEventSelect = document.getElementById('typeEvent');
+      const autreEventLabel = document.getElementById('autreEventLabel');
+      const autreEventInput = document.getElementById('autreEvent');
+
+      function toggleAutreEvent() {
+        if(typeEventSelect.value === 'Autre') {
+          autreEventLabel.style.display = 'block';
+          autreEventInput.required = true;
+        } else {
+          autreEventLabel.style.display = 'none';
+          autreEventInput.required = false;
+          autreEventInput.value = '';
+        }
+      }
+
+      toggleAutreEvent();
+      typeEventSelect.addEventListener('change', toggleAutreEvent);
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Récupération des éléments du DOM
+  const messagePhotobooth = document.getElementById('messagePhotobooth');
+  const nbParticipantsInput = document.getElementById('nbParticipants');
+  const quantiteOvaleInput = document.getElementById('quantiteOvale');
+  const quantiteMiniMiroirInput = document.getElementById('quantiteMiniMiroir');
+  const quantiteMiroirMagiqueInput = document.getElementById('quantiteMiroirMagique');
+  const quantite360Input = document.getElementById('quantite360');
+  const quantiteNombredephotoboothInput = document.getElementById('quantiteNombredephotobooth');
+  const nbreKilometreInput = document.getElementById('nbrekilometre');
+  const quantiteNombredekilometresInput = document.getElementById('quantiteNombredekilometres');
+  const option1 = document.getElementById('option1');
+  const option2 = document.getElementById('option2');
+  const totalNombredephotoboothInput = document.getElementById('totalNombredephotobooth');
+  const totalNombredekilometresInput = document.getElementById('totalNombredekilometres');
+
+  // Vérification des éléments essentiels
+  if (!messagePhotobooth || !nbParticipantsInput || !quantiteOvaleInput || !quantiteMiniMiroirInput ||
+      !quantiteMiroirMagiqueInput || !quantite360Input || !quantiteNombredephotoboothInput ||
+      !nbreKilometreInput || !quantiteNombredekilometresInput || !option1 || !option2 ||
+      !totalNombredephotoboothInput || !totalNombredekilometresInput) {
+    console.error('Un ou plusieurs éléments du formulaire sont introuvables.');
+    return;
+  }
+
+  function formatCHF(amount) {
+    if (isNaN(amount)) amount = 0;
+    return `CHF ${amount.toFixed(2).replace('.', ',')}`;
+  }
+
+  // Fonction unique qui met à jour tout dans l'ordre correct
+  function updateAll() {
+    // 1. Calculer le total de photobooths
+    const q360 = parseInt(quantite360Input.value) || 0;
+    const qMiroir = parseInt(quantiteMiroirMagiqueInput.value) || 0;
+    const qMini = parseInt(quantiteMiniMiroirInput.value) || 0;
+    const qOvale = parseInt(quantiteOvaleInput.value) || 0;
+    const totalPhotobooths = q360 + qMiroir + qMini + qOvale;
+    quantiteNombredephotoboothInput.value = totalPhotobooths;
+
+    // 2. Mettre à jour message selon participants
+    const nbParticipants = parseInt(nbParticipantsInput.value) || 0;
+    if (nbParticipants > 0 && totalPhotobooths < Math.ceil(nbParticipants / 150)) {
+      messagePhotobooth.style.display = 'block';
+    } else {
+      messagePhotobooth.style.display = 'none';
+    }
+
+    // 3. Calculer kilomètres doublés
+    const nbreKm = parseFloat(nbreKilometreInput.value) || 0;
+    const totalKm = nbreKm * 2;
+    quantiteNombredekilometresInput.value = totalKm;
+
+    // 4. Calculer totaux selon option
+    let total1 = 0;
+    let total2 = 0;
+    if (option1.checked) {
+      total1 = 50 * totalPhotobooths;
+      total2 = 0.7 * totalKm;
+    } else if (option2.checked) {
+      total1 = 0;
+      total2 = 0;
+    }
+
+    // 5. Afficher totaux formatés
+    totalNombredephotoboothInput.value = formatCHF(total1);
+    totalNombredekilometresInput.value = formatCHF(total2);
+  }
+
+  // Initialisation
+  updateAll();
+
+  // Ajout des écouteurs sur tous les champs sources (participants, qté, km, options)
+  nbParticipantsInput.addEventListener('input', updateAll);
+
+  [quantiteOvaleInput, quantiteMiniMiroirInput, quantiteMiroirMagiqueInput, quantite360Input].forEach(input => {
+    input.addEventListener('input', updateAll);
+  });
+
+  nbreKilometreInput.addEventListener('input', updateAll);
+
+  option1.addEventListener('change', () => {
+    option2.checked = false;
+    if (!option1.checked) option2.checked = true; // garantir qu'une option est toujours cochée
+    updateAll();
+  });
+
+  option2.addEventListener('change', () => {
+    option1.checked = false;
+    if (!option2.checked) option1.checked = true;
+    updateAll();
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const packs = [
+    'Ovale',
+    'MiniMiroir',
+    'MiroirMagique',
+    '360',
+    'PackImprimante1',
+    'PackImprimante2',
+    'PackImprimante3',
+    'PackImprimante4',
+    'MachineFumeeBulle',
+    'Accessoires1',
+    'Toile1',
+    'Toile2',
+    'Toile3',
+    'Toile4',
+    'Toile5',
+    'Toile6',
+    'Toile7',
+    'Toile8',
+    'Toile9',
+    'Toile10',
+    'Toile11',
+    'Toile12',
+    'Toile13',
+    'Toile14',
+  ];
+
+  const quantiteHotesHotessesInput = document.getElementById('quantiteHotesHotesses');
+  const heureHotesHotessesInput = document.getElementById('heureHotesHotesses');
+  const prixUnitaireHotesHotessesInput = document.getElementById('prixUnitaireHotesHotesses');
+  const totalHotesHotessesInput = document.getElementById('totalHotesHotesses');
+  const totalDevisInput = document.getElementById('totaldevis');
+
+  const totalKilometresInput = document.getElementById('totalNombredekilometres');
+  const totalPhotoboothInput = document.getElementById('totalNombredephotobooth');
+
+  function extractNumber(str) {
+    if (!str) return 0;
+    const cleaned = str.replace(/[^\d.,-]/g, '').replace(',', '.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  }
+
+  function calculTotalHotesHotesses() {
+    if (!quantiteHotesHotessesInput || !heureHotesHotessesInput || !prixUnitaireHotesHotessesInput || !totalHotesHotessesInput) {
+      return;
+    }
+
+    const quantite = parseInt(quantiteHotesHotessesInput.value, 10) || 0;
+    const heure = parseInt(heureHotesHotessesInput.value, 10) || 0;
+    const prix = parseFloat(prixUnitaireHotesHotessesInput.value.replace(/[^0-9.]/g, ''));
+
+    if (!isNaN(prix)) {
+      const total = quantite * heure * prix;
+      totalHotesHotessesInput.value = `CHF ${total.toFixed(2)}`;
+    } else {
+      totalHotesHotessesInput.value = 'CHF 0.00';
+    }
+
+    updateTotalDevis();
+  }
+
+  function calculerTotalPack(idPrefix) {
+    const quantiteInput = document.getElementById(`quantite${idPrefix}`);
+    const prixInput = document.getElementById(`prixUnitaire${idPrefix}`);
+    const totalInput = document.getElementById(`total${idPrefix}`);
+
+    if (!quantiteInput || !prixInput || !totalInput) {
+      return;
+    }
+
+    const quantite = parseInt(quantiteInput.value, 10) || 0;
+    const prix = parseFloat(prixInput.value.replace(/[^0-9.]/g, ''));
+
+    if (!isNaN(prix)) {
+      const total = quantite * prix;
+      totalInput.value = `CHF ${total.toFixed(2)}`;
+    } else {
+      totalInput.value = 'CHF 0.00';
+    }
+
+    updateTotalDevis();
+  }
+
+  function updateTotalDevis() {
+    let somme = 0;
+
+    // Total hôtes/hôtesses
+    somme += extractNumber(totalHotesHotessesInput?.value);
+
+    // Totaux de tous les packs
+    packs.forEach(idPrefix => {
+      const totalInput = document.getElementById(`total${idPrefix}`);
+      if (totalInput) {
+        somme += extractNumber(totalInput.value);
+      }
+    });
+
+    // Totaux supplémentaires
+    if (totalKilometresInput) {
+      somme += extractNumber(totalKilometresInput.value);
+    }
+
+    if (totalPhotoboothInput) {
+      somme += extractNumber(totalPhotoboothInput.value);
+    }
+
+    totalDevisInput.value = `CHF ${somme.toFixed(2)}`;
+  }
+
+  // Calcul initial
+  calculTotalHotesHotesses();
+  packs.forEach(calculerTotalPack);
+  updateTotalDevis();
+
+  // Écouteurs hôtes/hôtesses
+  quantiteHotesHotessesInput?.addEventListener('input', calculTotalHotesHotesses);
+  heureHotesHotessesInput?.addEventListener('input', calculTotalHotesHotesses);
+  prixUnitaireHotesHotessesInput?.addEventListener('input', calculTotalHotesHotesses);
+
+  // Écouteurs packs
+  packs.forEach(idPrefix => {
+    const quantiteInput = document.getElementById(`quantite${idPrefix}`);
+    const prixInput = document.getElementById(`prixUnitaire${idPrefix}`);
+
+    quantiteInput?.addEventListener('input', () => calculerTotalPack(idPrefix));
+    prixInput?.addEventListener('input', () => calculerTotalPack(idPrefix));
+  });
+
+  // Écouteurs champs supplémentaires
+  totalKilometresInput?.addEventListener('input', updateTotalDevis);
+  totalPhotoboothInput?.addEventListener('input', updateTotalDevis);
+});
+
+  window.addEventListener('DOMContentLoaded', function () {
+    const dateEventInput = document.getElementById('DateEvent');
+    const dateLivraisonInput = document.getElementById('DateLivraison');
+    const dateRetraitInput = document.getElementById('DateRetrait');
+
+    function updateDates() {
+      const dateEvent = dateEventInput.value;
+      if (!dateEvent) return;
+
+      // Mise à jour de DateLivraison
+      if (dateLivraisonInput) {
+        dateLivraisonInput.value = dateEvent;
+      }
+
+      // Calcul et mise à jour de DateRetrait (DateEvent + 1 jour)
+      if (dateRetraitInput) {
+        const eventDate = new Date(dateEvent);
+        eventDate.setDate(eventDate.getDate() + 1);
+
+        const year = eventDate.getFullYear();
+        const month = String(eventDate.getMonth() + 1).padStart(2, '0');
+        const day = String(eventDate.getDate()).padStart(2, '0');
+
+        dateRetraitInput.value = `${year}-${month}-${day}`;
+      }
+
+      // Appeler updateTotal s’il existe
+      if (typeof updateTotal === 'function') {
+        updateTotal();
+      }
+    }
+
+    if (dateEventInput) {
+      updateDates(); // Initialiser à l'ouverture
+      dateEventInput.addEventListener('change', updateDates);
+    }
+  });
+
+window.addEventListener('DOMContentLoaded', () => {
+  const option1 = document.getElementById('option1');
+  const option2 = document.getElementById('option2');
+  const RetraitInput = document.getElementById('Retrait');
+
+  function updateRetrait() {
+    if (option2.checked) {
+      RetraitInput.value = "Date de retour";
+    } else if (option1.checked) {
+      RetraitInput.value = "Date de retrait";
+    }
+    if (typeof updateTotal === "function") {
+      updateTotal();
+    }
+  }
+
+  if (option1 && option2 && RetraitInput) {
+    option1.addEventListener('change', updateRetrait);
+    option2.addEventListener('change', updateRetrait);
+
+    // Initial call to set correct value on page load
+    updateRetrait();
+  }
+});
+
+  </script>
+
+<script>
+  function afficherMessagesImprimante() {
+    const quantiteOvale = parseInt(document.getElementById('quantiteOvale').value) || 0;
+    const quantiteMiniMiroir = parseInt(document.getElementById('quantiteMiniMiroir').value) || 0;
+    const quantiteMiroirMagique = parseInt(document.getElementById('quantiteMiroirMagique').value) || 0;
+    const quantite360 = parseInt(document.getElementById('quantite360').value) || 0;
+
+    const totalPhotobooth = quantiteOvale + quantiteMiniMiroir + quantiteMiroirMagique;
+
+    document.getElementById('messageImprimante1').style.display = totalPhotobooth > 0 ? 'block' : 'none';
+    document.getElementById('messageImprimante2').style.display = quantite360 > 0 ? 'block' : 'none';
+  }
+
+  // Ajouter des écouteurs pour chaque champ de quantité
+  ['quantiteOvale', 'quantiteMiniMiroir', 'quantiteMiroirMagique', 'quantite360'].forEach(id => {
+    document.getElementById(id).addEventListener('input', afficherMessagesImprimante);
+  });
+
+  // Appel initial pour les cas où il y a déjà des valeurs pré-remplies
+  window.addEventListener('DOMContentLoaded', afficherMessagesImprimante);
+</script>
+
+<script>
+  const quantiteToile13 = document.getElementById('quantiteToile13');
+  const quantiteToile14 = document.getElementById('quantiteToile14');
+  const quantiteHotesHotesses = document.getElementById('quantiteHotesHotesses');
+  const messageToile1 = document.getElementById('messageToile1');
+  const messageToile2 = document.getElementById('messageToile2');
+  const messageHote = document.getElementById('messageHote');
+
+  function updateMessages() {
+    messageToile1.style.display = quantiteToile13.value > 0 ? 'block' : 'none';
+    messageToile2.style.display = quantiteToile14.value > 0 ? 'block' : 'none';
+    messageHote.style.display = quantiteHotesHotesses.value > 0 ? 'block' : 'none';
+  }
+
+  quantiteToile13.addEventListener('input', updateMessages);
+  quantiteToile14.addEventListener('input', updateMessages);
+  quantiteHotesHotesses.addEventListener('input', updateMessages);
+
+  // Optionnel: initialiser l’affichage au chargement de la page
+  updateMessages();
+</script>
+
+<script>
+  window.initMap = function() {
+    const adresseMaison = "Rue Pierre de Savoie 9, 1680 Romont, Suisse";
+    const adresseInput = document.getElementById('adresseEvent');
+    const distanceInput = document.getElementById('nbrekilometre');
+    const service = new google.maps.DistanceMatrixService();
+
+    adresseInput.addEventListener('input', () => {
+      const adresseClient = adresseInput.value.trim();
+      if (!adresseClient) {
+        distanceInput.value = '';
+        return;
+      }
+
+      service.getDistanceMatrix({
+        origins: [adresseMaison],
+        destinations: [adresseClient],
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+      }, (response, status) => {
+        if (status !== "OK") {
+          distanceInput.value = 'Erreur : ' + status;
+          return;
+        }
+        const element = response.rows[0].elements[0];
+        if (element.status === "OK") {
+          // element.distance.value est la distance en mètres
+          const distanceMetres = element.distance.value;
+          const distanceKm = Math.round(distanceMetres / 1000);
+          distanceInput.value = distanceKm; // juste le nombre arrondi
+        } else {
+          distanceInput.value = "Impossible de calculer la distance.";
+        }
+      });
+    });
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4FS1GPaSsOpGVy08CzfCvDRD01EI-6k0&callback=initMap" async defer></script>
+
+
+<script>
+  document.getElementById('contactForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const res = await fetch('/api/generate-pdf', {
+      method: 'POST',
+      body: formData
+    });
+    const json = await res.json();
+    console.log(json);
+  });
+</script>
+
+</body>
+</html>
