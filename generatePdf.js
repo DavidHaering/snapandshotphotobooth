@@ -895,11 +895,11 @@ async function uploadPdfToGCS(formData) {
       checkPageBreak();
       doc.text(`Thème: ${folderName}`, margeGauche, y);
       checkPageBreak();
-      doc.text(`Style: ${subfolderName}`, margeGauche, y);
+      doc.text(`Style: ${subfolderName}`, margeGauche, y + 14);
       checkPageBreak();
-      doc.text(`Template: ${imageName}`, margeGauche, y + 14);
+      doc.text(`Template: ${imageName}`, margeGauche, y + 28);
       checkPageBreak();
-      y += 30;
+      y += 44;
     });
       y += interligne-2
     }
