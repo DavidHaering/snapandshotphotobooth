@@ -959,7 +959,7 @@ async function uploadPdfToGCS(formData) {
 
     checkPageBreak();
     doc.text(`Votre numéro de téléphone: ${telephone}`, margeGauche, y);
-    y += interligne * 2
+    y += interligne * 2;
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
