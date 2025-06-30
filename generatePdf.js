@@ -936,6 +936,30 @@ async function uploadPdfToGCS(formData) {
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+    // --- Coordonnées du client ---
+
+    checkPageBreak();
+    doc.font('Calibri-Bold').fontSize(policeTexte).text(`Coordonnées client:`, margeGauche, y, { width: margeParagraph });
+    doc.font('Calibri').fontSize(policeTexte)
+
+    y += interligne;
+
+    const textePart5 = `Coordonnées client:`;
+    const largeurPart5 = doc.widthOfString(textePart5);
+
+    doc.moveTo(margeGauche, y-4)
+       .lineTo(margeGauche + largeurPart4 + 2, y-4)
+       .stroke();
+
+    y += interligne-10;
+
+    checkPageBreak();
+    doc.text(`Votre adresse email: ${email}`, margeGauche, y);
+    checkPageBreak();
+    doc.text(`Votre numéro de téléphone: ${telephone}`, margeGauche, y);
+
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
     checkPageBreak();
     doc.text("Nous vous rendons attentifs que notre installation nécessite d'un espace d'environ 7.5m2 (3m x 2.5m) et d'une prise électrique (230V/50Hz). L'utilisation est de nos photobooth est 100% tactile, simple et intuitive.", margeGauche, y, { width: margeParagraph, align: 'justify' });
     doc.moveDown(1)
