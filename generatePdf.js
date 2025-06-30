@@ -86,7 +86,7 @@ async function uploadPdfToGCS(formData) {
     }
 
     function checkPageBreak() {
-      if (y + interligne > pageHeight - margeBasse) {
+      if (y + interligne*2 > pageHeight - margeBasse) {
         doc.addPage();
         y = margeHaute;
       }
@@ -881,7 +881,7 @@ async function uploadPdfToGCS(formData) {
 
     if (filesArray.length === 0) {
       checkPageBreak();
-      doc.text("Selon votre visuel, ou selon communication ultérieure", margeGauche, y);
+      doc.text("Selon votre visuel, ou communication ultérieure.", margeGauche, y);
       y += interligne;
     } else {
 
@@ -1239,13 +1239,14 @@ async function uploadPdfToGCS(formData) {
 
     // Envoi vers Google Cloud Storage
     const fileName = `devis-${Date.now()}.pdf`;
-    const file = storage.bucket(bucketName).file(fileName);
+    const filePath = `PDFDevis/${fileName}`;
+    const file = storage.bucket(bucketName).file(filePath);
     await file.save(writableBuffer.getContents(), {
       metadata: { contentType: 'application/pdf' }
     });
 
     console.log(`✅ PDF uploaded to ${fileName}`);
-    return `https://storage.googleapis.com/${bucketName}/${fileName}`;
+    return `https://storage.googleapis.com/${bucketName}/${filePath}`;
   } catch (err) {
     console.error('❌ Erreur lors de la génération du PDF :', err);
     throw err;
