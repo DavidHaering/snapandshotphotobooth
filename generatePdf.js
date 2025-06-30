@@ -879,6 +879,12 @@ async function uploadPdfToGCS(formData) {
       filesArray = formData.selectedFiles;
     }
 
+    if (filesArray.length === 0) {
+      checkPageBreak();
+      doc.text("Selon votre visuel, ou selon communication ultérieure", margeGauche, y);
+      y += interligne;
+    } else {
+
     filesArray.slice(0, 12).forEach((url) => {
       const decodedUrl = decodeURIComponent(url);
       const parts = decodedUrl.split('/');
@@ -890,12 +896,10 @@ async function uploadPdfToGCS(formData) {
       checkPageBreak();
       doc.text(`Template: ${imageName}`, margeGauche, y + 14);
       checkPageBreak();
-      y += 14;
-      checkPageBreak();
-      y +=16;
+      y += 30;
     });
-      checkPageBreak();
       y += interligne-2
+    }
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
