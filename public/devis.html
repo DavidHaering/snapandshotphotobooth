@@ -1208,12 +1208,12 @@
     <hr class="section-divider" />
 
     <label for="level1" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Catégorie d'événement</label>
-      <select id="level1">
+      <select id="level1" required>
         <option value="">-- Choisissez --</option>
       </select>
 
     <label for="level2" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Style</label>
-      <select id="level2" disabled>
+      <select id="level2" disabled required>
         <option value="">-- Choisissez et sélectionnez les formats --</option>
       </select>
 
@@ -1289,9 +1289,11 @@
 
     <hr class="section-divider" />
 
-      <button type="submit">Envoyer</button>
+      <button type="submit" id="submitBtn">Envoyer</button>
 
-      <div id="result"></div>
+      <div id="loadingMessage" style="display:none; color:#007bff; margin-top:10px;">
+        ⚙️ Génération en cours, merci de patienter...
+      </div>
 
   </form>
 
@@ -1837,9 +1839,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 <script>
+
+  const submitBtn = document.getElementById('submitBtn');
+  const loadingMessage = document.getElementById('loadingMessage');
+
   document.getElementById('contactForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
+
+    loadingMessage.style.display = 'block';
+    submitBtn.disabled = true;
+
     const formData = new FormData(form);
 
     try {
@@ -1865,7 +1875,11 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error('Erreur lors de la requête fetch:', error);
       alert('Erreur réseau ou serveur, merci de réessayer.');
+    } finally {
+      loadingMessage.style.display = 'none';
+      submitBtn.disabled = false;
     }
+
   });
 </script>
 
