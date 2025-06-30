@@ -1237,8 +1237,13 @@ async function uploadPdfToGCS(formData) {
       writableBuffer.on('error', reject);
     });
 
+
     // Envoi vers Google Cloud Storage
-    const fileName = `devis-${Date.now()}.pdf`;
+    const client = entreprise !== '' ? entreprise : `${prenom} ${nom}`;
+    function cleanFileName(str) {
+      return str.replace(/[\/\\?%*:|"<>]/g, '-'); // remplace les caractères interdits par un tiret
+    }
+    const fileName = `${cleanFileName(client)} - Devis - ${cleanFileName(typeEvent)} du ${cleanFileName(DateEvent)} à ${cleanFileName(LieuEvent)}, ${cleanFileName(adresseEvent)}.pdf`;
     const filePath = `PDFDevis/${fileName}`;
     const file = storage.bucket(bucketName).file(filePath);
     await file.save(writableBuffer.getContents(), {
