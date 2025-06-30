@@ -13,7 +13,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   ]);
 }
 
-async function sendEmail(pdfUrl, recipientEmail) {
+async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = '') {
   if (!pdfUrl) {
     throw new Error("Aucune URL de PDF fournie.");
   }
@@ -34,6 +34,10 @@ async function sendEmail(pdfUrl, recipientEmail) {
       <div style="font-family: Arial, sans-serif; color: #333;">
         <p>Bonjour,</p>
         <p>Veuillez trouver ci-joint le devis que vous nous avez demandé.</p>
+        ${commentaires ? `<p><strong>Commentaires :</strong><br>${commentaires.replace(/\n/g, '<br>')}</p>` : ''}
+        <p>Vos coordonnées:</p>
+        ${recipientEmail ? `<p><strong>Email :</strong> ${recipientEmail}</p>` : ''}
+        ${telephone ? `<p><strong>Téléphone :</strong> ${telephone}</p>` : ''}
         <p>Nous restons à votre disposition pour des informations complémentaires.</p>
         <p>En vous remerciant d'avance pour votre confiance, nous vous souhaitons une excellente journée.</p>
         <p>L'équipe Snap&Shot</p>
