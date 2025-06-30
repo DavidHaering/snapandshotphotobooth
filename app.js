@@ -83,16 +83,44 @@ app.get('/api/folders-level2/:folder', async (req, res) => {
   }
 });
 
-app.get('/api/files/:folder/:subfolder', async (req, res) => {
+app.get('/api/folders-level3/:folder/:subfolder', async (req, res) => {
   try {
     const { folder, subfolder } = req.params;
     const files = await listAllFiles();
+    const level3 = new Set();
+
+    files.forEach(f => {
+      const parts = f.split('/');
+      if (
+        parts[0] === 'TemplatePhotobooth' &&
+        parts[1] === folder &&
+        parts[2] === subfolder &&
+        parts[3]
+      ) {
+        level3.add(parts[3]);
+      }
+    });
+
+    res.json(Array.from(level3).sort());
+  } catch (err) {
+    console.error("❌ Erreur /api/folders-level3 :", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/files/:folder/:subfolder/:subsubfolder', async (req, res) => {
+  try {
+    const { folder, subfolder, subsubfolder } = req.params;
+    const files = await listAllFiles();
+
     const fileList = files
-      .filter(f => f.startsWith(`TemplatePhotobooth/${folder}/${subfolder}/`))
-      .map(f => f.split('/').slice(3).join('/'))
+      .filter(f => f.startsWith(`TemplatePhotobooth/${folder}/${subfolder}/${subsubfolder}/`))
+      .map(f => f.split('/').slice(4).join('/'))
       .filter(name => name.length > 0);
+
     res.json(fileList.sort());
   } catch (err) {
+    console.error("❌ Erreur /api/files/3niveaux :", err);
     res.status(500).json({ error: err.message });
   }
 });
