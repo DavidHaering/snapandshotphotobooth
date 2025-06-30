@@ -13,7 +13,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   ]);
 }
 
-async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = '') {
+async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = '', fichiersJoints = []) {
   if (!pdfUrl) {
     throw new Error("Aucune URL de PDF fournie.");
   }
@@ -34,10 +34,10 @@ async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = 
       <div style="font-family: Arial, sans-serif; color: #333;">
         <p>Bonjour,</p>
         <p>Veuillez trouver ci-joint le devis que vous nous avez demandé.</p>
-        ${commentaires ? `<p><strong>Commentaires :</strong><br>${commentaires.replace(/\n/g, '<br>')}</p>` : ''}
+        ${commentaires ? `<p>Commentaires :<br>${commentaires.replace(/\n/g, '<br>')}</p>` : ''}
         <p>Vos coordonnées:</p>
-        ${recipientEmail ? `<p><strong>Email :</strong> ${recipientEmail}</p>` : ''}
-        ${telephone ? `<p><strong>Téléphone :</strong> ${telephone}</p>` : ''}
+        ${recipientEmail ? `<p>Email: ${recipientEmail}</p>` : ''}
+        ${telephone ? `<p>Téléphone : ${telephone}</p>` : ''}
         <p>Nous restons à votre disposition pour des informations complémentaires.</p>
         <p>En vous remerciant d'avance pour votre confiance, nous vous souhaitons une excellente journée.</p>
         <p>L'équipe Snap&Shot</p>
@@ -59,20 +59,32 @@ async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = 
   }
 });
 
-    const mailOptions = {
-      from: process.env.SMTP_USER || 'info@snapandshot.ch',
-      to: recipientEmail,
-      cc: 'info@snapandshot.ch',
-      subject: '📄 Votre devis est prêt !',
-      html: htmlContent,
-      attachments: [
-        {
-          filename: 'devis.pdf',
-          content: pdfBuffer,
-          contentType: 'application/pdf',
-        },
-      ],
-    };
+const attachments = [
+  {
+    filename: 'devis.pdf',
+    content: pdfBuffer,
+    contentType: 'application/pdf',
+  },
+];
+
+// Ajoute les fichiers joints (uploadés via multer) s'ils existent
+for (const fichier of fichiersJoints) {
+  if (fichier) {
+    attachments.push({
+      filename: fichier.originalname,
+      path: fichier.path,  // multer stocke temporairement le fichier ici
+    });
+  }
+}
+
+const mailOptions = {
+  from: process.env.SMTP_USER || 'info@snapandshot.ch',
+  to: recipientEmail,
+  cc: 'info@snapandshot.ch',
+  subject: '📄 Votre devis est prêt !',
+  html: htmlContent,
+  attachments, // utilise le tableau construit ci-dessus
+};
   
     await transporter.sendMail(mailOptions);
     console.log(`✅ Email envoyé à ${recipientEmail}`);

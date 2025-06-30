@@ -168,7 +168,7 @@ app.post('/api/generate-pdf', upload.fields([
     const telephone = req.body.telephone || '';
     if (recipientEmail) {
       console.log(`📧 Envoi du PDF à ${recipientEmail}`);
-      await sendEmail(pdfUrl, recipientEmail, commentaires, telephone);
+      await sendEmail(pdfUrl, recipientEmail, commentaires, telephone, [fichier1, fichier2]);
     } else {
       console.warn("⚠️ Aucune adresse email fournie.");
     }
