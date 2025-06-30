@@ -13,7 +13,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 10000) {
   ]);
 }
 
-async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = '', fichiersJoints = []) {
+async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = '', fichiersJoints = [], livraison = '', dateLivraison = '', heureLivraison = '', retrait = '', dateRetrait = '', heureRetrait = '') {
   if (!pdfUrl) {
     throw new Error("Aucune URL de PDF fournie.");
   }
@@ -38,6 +38,8 @@ async function sendEmail(pdfUrl, recipientEmail, commentaires = '', telephone = 
         <p>Vos coordonnées:</p>
         ${recipientEmail ? `<p>Email: ${recipientEmail}</p>` : ''}
         ${telephone ? `<p>Téléphone : ${telephone}</p>` : ''}
+        ${livraison ? `<p>${livraison} :<br>${dateLivraison} à ${heureLivraison}</p>` : ''}
+        ${retrait ? `<p>${retrait} :<br>${dateRetrait} à ${heureRetrait}</p>` : ''}
         <p>Nous restons à votre disposition pour des informations complémentaires.</p>
         <p>En vous remerciant d'avance pour votre confiance, nous vous souhaitons une excellente journée.</p>
         <p>L'équipe Snap&Shot</p>
