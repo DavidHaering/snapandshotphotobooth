@@ -955,12 +955,11 @@ async function uploadPdfToGCS(formData) {
 
     checkPageBreak();
     doc.text(`Votre adresse email: ${email}`, margeGauche, y);
-    y += interligne
+    doc.moveDown()
 
     checkPageBreak();
     doc.text(`Votre numéro de téléphone: ${telephone}`, margeGauche, y);
-
-    y += interligne * 2
+    doc.moveDown(1)
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
