@@ -284,7 +284,6 @@
 
 
 
-/* Réduction plus forte des polices sur petits écrans */
 @media (max-width: 600px) {
   body {
     font-size: 12px; /* encore plus petit */
@@ -294,6 +293,16 @@
   }
   input, select, textarea, button {
     font-size: 0.7em;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+  /* Ciblage spécifique pour date et time */
+  input[type="date"],
+  input[type="time"] {
+    font-size: 0.7em;
+    height: 30px; /* réduire hauteur si besoin */
+    padding: 5px 8px; /* ajuster padding */
   }
   h1 {
     font-size: 1.2em;
