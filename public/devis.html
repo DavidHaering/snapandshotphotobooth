@@ -122,9 +122,22 @@
 
     .field.CDATE {
       width: 25%;
+      height: 36px;
+      padding: 10px;
+      font-size: 16px
     }
     .field.CDATE input {
       border: 1px solid black;
+    }
+    .field.CLIVRAISON {
+      width: 25%;
+      height: 36px;
+      padding: 10px;
+      font-size: 16px
+      text-align: right;
+      border: none;
+      user-select: none;
+      pointer-events: none;
     }
 
     .field.CNAME {
@@ -158,6 +171,14 @@
       user-select: none;
       pointer-events: none;
     }
+    .field.CTOTAL2 {
+      width: 25%;
+      text-align: right;
+      font-size: 25px;
+      border: none;
+      user-select: none;
+      pointer-events: none;
+    }
     .main-text {
       font-size: 1em;
       margin-left: 0.5em;
@@ -167,15 +188,9 @@
       color: #555;
       margin-left: 0.2em;
     }
-    .field.CLIVRAISON {
-      width: 25%;
-      text-align: right;
-      border: none;
-      user-select: none;
-      pointer-events: none;
-    }
     .field.CDEVIS {
       width: 75%;
+      font-size: 25px;
     }
 
     label {
@@ -439,7 +454,7 @@
       </div>
       <div class="field CDATE">
         <label for="DateEvent">Date de l'événement</label>
-        <input type="date" id="DateEvent" name="DateEvent" style="height: 36px; padding: 10px; font-size: 16px;" />
+        <input type="date" id="DateEvent" name="DateEvent"/>
       </div>
       <div class="field CKM">
         <label for="nbParticipants">Nombre de participants (environ)</label>
@@ -638,13 +653,13 @@
         <input type="text" id="Livraison" name="Livraison" value="Date de livraison" readonly tabindex="-1">
       </div>
       <div class="field CDATE">
-        <input type="date" id="DateLivraison" name="DateLivraison" style="height: 36px; padding: 10px; font-size: 16px;" />
+        <input type="date" id="DateLivraison" name="DateLivraison"/>
       </div>
       <div class="field CLIVRAISON">
-        <input type="text" id="HLivraison" name="HLivraison" value="Heure" readonly tabindex="-1" style="text-align: center; height: 36px; padding: 10px; font-size: 16px;" />
+        <input type="text" id="HLivraison" name="HLivraison" value="Heure" readonly tabindex="-1" style="text-align: center;" />
       </div>
       <div class="field CDATE">
-        <input type="time" id="HeureLivraison" name="HeureLivraison" value="14:00" />
+        <input type="time" id="HeureLivraison" name="HeureLivraison" value="14:00"/>
       </div>
     </div>
     <div class="row">
@@ -652,10 +667,10 @@
         <input type="text" id="Retrait" name="Retrait" value="Date de retrait" readonly tabindex="-1">
       </div>
       <div class="field CDATE">
-        <input type="date" id="DateRetrait" name="DateRetrait" style="height: 36px; padding: 10px; font-size: 16px;" />
+        <input type="date" id="DateRetrait" name="DateRetrait"/>
       </div>
       <div class="field CLIVRAISON">
-        <input type="text" id="HRetrait" name="HRetrait" value="Heure" readonly tabindex="-1" style="text-align: center; height: 36px; padding: 10px; font-size: 16px;" />
+        <input type="text" id="HRetrait" name="HRetrait" value="Heure" readonly tabindex="-1" style="text-align: center;" />
       </div>
       <div class="field CDATE">
         <input type="time" id="HeureRetrait" name="HeureRetrait" value="10:00" />
@@ -1326,10 +1341,10 @@
 
     <div class="row">
       <div class="CDEVIS">
-        <input type="text" id="Devis" name="Devis" value="Montant total du devis" readonly tabindex="-1" style="font-size: 25px;">
+        <input type="text" id="Devis" name="Devis" value="Montant total du devis" readonly tabindex="-1">
       </div>
-      <div class="CTOTAL">
-        <input type="text" id="totaldevis" name="totaldevis" value="CHF 0.00" readonly tabindex="-1" style="font-size: 25px; text-align: right;">
+      <div class="CTOTAL2">
+        <input type="text" id="totaldevis" name="totaldevis" value="CHF 0.00" readonly tabindex="-1" style="text-align: right;">
       </div>
     </div>
 
