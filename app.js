@@ -8,6 +8,22 @@ const { Storage } = require('@google-cloud/storage');
 const uploadPdfToGCS = require('./generatePdf');
 const { sendEmail } = require('./sendEmail');
 
+const fs = require('fs');
+
+function deleteLocalFile(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`❌ Impossible de supprimer le fichier local ${filePath}`, err);
+        reject(err);
+      } else {
+        console.log(`🗑️ Fichier temporaire supprimé : ${filePath}`);
+        resolve();
+      }
+    });
+  });
+}
+
 const upload = multer({ dest: 'uploads/' });
 
 const app = express();
@@ -172,7 +188,8 @@ app.post('/api/generate-pdf', upload.fields([
     } else {
       console.warn("⚠️ Aucune adresse email fournie.");
     }
-
+      if (fichier1?.path) await deleteLocalFile(fichier1.path);
+      if (fichier2?.path) await deleteLocalFile(fichier2.path);
     res.json({ url: pdfUrl });
 
   } catch (err) {
