@@ -948,15 +948,18 @@ async function uploadPdfToGCS(formData) {
     const largeurPart5 = doc.widthOfString(textePart5);
 
     doc.moveTo(margeGauche, y-4)
-       .lineTo(margeGauche + largeurPart4 + 2, y-4)
+       .lineTo(margeGauche + largeurPart5 + 2, y-4)
        .stroke();
 
     y += interligne-10;
 
     checkPageBreak();
     doc.text(`Votre adresse email: ${email}`, margeGauche, y);
+    y += interligne;
+
     checkPageBreak();
     doc.text(`Votre numéro de téléphone: ${telephone}`, margeGauche, y);
+    y += interligne * 2
 
     //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
