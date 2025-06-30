@@ -889,81 +889,19 @@ async function uploadPdfToGCS(formData) {
       const decodedUrl = decodeURIComponent(url);
       const parts = decodedUrl.split('/');
       const imageName = parts.pop();
-      const folderName = parts.pop();
       const subfolderName = parts.pop();
 
       checkPageBreak();
-      doc.text(`Thème: ${folderName}`, margeGauche, y);
+      doc.text(`Style: ${subfolderName}`, margeGauche, y);
       checkPageBreak();
-      doc.text(`Style: ${subfolderName}`, margeGauche, y + 14);
+      doc.text(`Template: ${imageName}`, margeGauche, y + 14);
       checkPageBreak();
-      doc.text(`Template: ${imageName}`, margeGauche, y + 28);
-      checkPageBreak();
-      y += 44;
+      y += 30;
     });
       y += interligne-2
     }
 
-    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-    // --- Commentaires et fichiers joints ---
-
-    if (commentaires.trim() !== '') {
-    checkPageBreak();
-    doc.text("Nous avons bien reçu les informations suivantes:", margeGauche, y, { width: margeParagraph, align: 'justify' });
-    checkPageBreak();
-    y += interligne * 2;
-    checkPageBreak();
-    doc.text(commentaires, margeGauche, y);
-    checkPageBreak();
-    y += interligne * 2;
-    }
-
-    if (fichierJoint1 || fichierJoint2) {
-    checkPageBreak();
-    doc.text("Nous avons bien reçu les documents suivants:", margeGauche, y, { width: margeParagraph, align: 'justify' });
-    checkPageBreak();
-    y += interligne * 2;
-    checkPageBreak();
-    if (fichierJoint1 && fichierJoint1.originalname) {
-      doc.text(`Fichier joint 1 : ${fichierJoint1.originalname}`, margeGauche, y);
-      y += 14;
-    }
-    checkPageBreak();
-    if (fichierJoint2 && fichierJoint2.originalname) {
-      doc.text(`Fichier joint 2 : ${fichierJoint2.originalname}`, margeGauche, y);
-    }
-    checkPageBreak();
-    y += interligne * 2;
-    }
-
-    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-    // --- Coordonnées du client ---
-
-    checkPageBreak();
-    doc.font('Calibri-Bold').fontSize(policeTexte).text(`Coordonnées client:`, margeGauche, y, { width: margeParagraph });
-    doc.font('Calibri').fontSize(policeTexte)
-
-    y += interligne;
-
-    const textePart5 = `Coordonnées client:`;
-    const largeurPart5 = doc.widthOfString(textePart5);
-
-    doc.moveTo(margeGauche, y-4)
-       .lineTo(margeGauche + largeurPart5 + 2, y-4)
-       .stroke();
-
-    y += interligne-10;
-
-    checkPageBreak();
-    doc.text(`Votre adresse email: ${email}`, margeGauche, y);
-    checkPageBreak();
-    doc.text(`Votre numéro de téléphone: ${telephone}`, margeGauche, y+14);
-
-    y += 42
-
-    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     checkPageBreak();
     doc.text("Nous vous rendons attentifs que notre installation nécessite d'un espace d'environ 7.5m2 (3m x 2.5m) et d'une prise électrique (230V/50Hz). L'utilisation est de nos photobooth est 100% tactile, simple et intuitive.", margeGauche, y, { width: margeParagraph, align: 'justify' });
