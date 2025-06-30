@@ -1207,19 +1207,19 @@
     <h2>Photos / Écran d'accueil</h2>
     <hr class="section-divider" />
 
-    <label for="level1" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Catégorie d'événement</label>
+    <label for="level1" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Événement</label>
       <select id="level1" required>
         <option value="">-- Choisissez l'événement --</option>
       </select>
 
-    <label for="level2" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Style</label>
+    <label for="level2" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Thème</label>
       <select id="level2" disabled required>
-        <option value="">-- Choisissez le style --</option>
+        <option value="">-- Choisissez le thème --</option>
       </select>
 
-    <label for="level3" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Thème</label>
+    <label for="level3" style="font-size:0.75em; margin-bottom:0.2em; color:#555; display:block;">Style</label>
       <select id="level3" disabled required>
-        <option value="">-- Choisissez le thème --</option>
+        <option value="">-- Choisissez le style --</option>
       </select>
 
     <div id="imagePreview"></div>
@@ -1326,8 +1326,8 @@
       level1Select.addEventListener('change', () => {
         const folder = level1Select.value;
 
-        level2Select.innerHTML = '<option value="">-- Choisissez un style --</option>';
-        level3Select.innerHTML = '<option value="">-- Choisissez un thème --</option>';
+        level2Select.innerHTML = '<option value="">-- Choisissez un thème --</option>';
+        level3Select.innerHTML = '<option value="">-- Choisissez un style --</option>';
         imagePreview.innerHTML = '';
 
         if (!folder) {
@@ -1355,7 +1355,7 @@
         const folder = level1Select.value;
         const subfolder = level2Select.value;
 
-        level3Select.innerHTML = '<option value="">-- Choisissez un thème --</option>';
+        level3Select.innerHTML = '<option value="">-- Choisissez un style --</option>';
         imagePreview.innerHTML = '';
 
         if (!subfolder) {

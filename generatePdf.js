@@ -889,8 +889,11 @@ async function uploadPdfToGCS(formData) {
       const decodedUrl = decodeURIComponent(url);
       const parts = decodedUrl.split('/');
       const imageName = parts.pop();
+      const folderName = parts.pop();
       const subfolderName = parts.pop();
 
+      checkPageBreak();
+      doc.text(`Thème: ${folderName}`, margeGauche, y);
       checkPageBreak();
       doc.text(`Style: ${subfolderName}`, margeGauche, y);
       checkPageBreak();
